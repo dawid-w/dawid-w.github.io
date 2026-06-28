@@ -74,6 +74,12 @@ a {
   display: block;
   /* Webkit mask fix to force rounded corner clipping */
   -webkit-mask-image: -webkit-radial-gradient(white, black);
+  
+  /* Anti-aliasing and subpixel rendering fixes for rotated/scaled states */
+  border: 1px solid transparent;
+  background-clip: padding-box;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .phone-mockup-screen {
@@ -82,6 +88,10 @@ a {
   object-fit: cover;
   display: block;
   border-radius: 48px; /* apply directly to image */
+  
+  /* Anti-aliasing and subpixel rendering fixes */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 /* Animations */

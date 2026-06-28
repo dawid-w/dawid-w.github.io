@@ -277,23 +277,31 @@
   position: absolute;
   top: 50%;
   right: -2%;
-  transform: translateY(-50%) scale(0.6) rotate(5deg);
+  transform: translateY(-50%) scale(0.6) rotate(-8deg) translateZ(0);
   transform-origin: center right;
   z-index: 1;
   width: 402px;
   box-shadow: 0 50px 90px rgba(20, 20, 22, 0.26);
   border-radius: 48px;
+  /* Anti-aliasing and hardware rendering fixes for rotated elements */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  will-change: transform;
 }
 
 .hero-phone-front {
   position: absolute;
   top: 50%;
   left: 34%;
-  transform: translate(-50%, -50%) scale(0.72);
+  transform: translate(-50%, -50%) scale(0.72) translateZ(0);
   z-index: 2;
   width: 402px;
   box-shadow: 0 40px 80px rgba(20, 20, 22, 0.16);
   border-radius: 48px;
+  /* Anti-aliasing and hardware rendering fixes for scaled elements */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  will-change: transform;
 }
 
 /* Feature Grid Section */
