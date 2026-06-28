@@ -744,6 +744,7 @@
   }
   .phone-stage {
     height: 520px;
+    margin-top: 60px; /* Push the phone mockup down to prevent overlapping the hero CTA button/text */
   }
   .hero-phone-front {
     left: 50%;
@@ -755,9 +756,16 @@
     text-align: center;
     max-width: 100%;
   }
+  .showcase-row {
+    flex-direction: column !important; /* Forces consistent Text-on-top, Phone-on-bottom ordering for all showcases on mobile */
+  }
   .showcase-text-col {
     align-items: center;
     text-align: center;
+  }
+  .section-pad {
+    padding-top: 80px !important; /* Increase spacing above HABITS and INSIGHTS labels on mobile screens */
+    padding-bottom: 80px !important;
   }
   .footer-inner {
     flex-direction: column;
