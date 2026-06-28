@@ -757,6 +757,9 @@
     text-align: center;
     max-width: 100%;
   }
+  .features-cards-row {
+    margin-bottom: 32px; /* Add margin below the last card on mobile before the next section starts */
+  }
   .showcase-row {
     flex-direction: column !important; /* Forces consistent Text-on-top, Phone-on-bottom ordering for all showcases on mobile */
   }
