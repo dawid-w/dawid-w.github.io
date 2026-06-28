@@ -747,3 +747,105 @@
     gap: 12px;
   }
 }
+
+/* ==========================================
+   Fancy Dynamic Animations & Scroll Reveals
+   ========================================== */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Hero Load-In Animations */
+  @keyframes heroFadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes phoneLoadInFront {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -40%) scale(0.65) translateZ(0);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(0.72) translateZ(0);
+    }
+  }
+
+  @keyframes phoneLoadInBehind {
+    from {
+      opacity: 0;
+      transform: translateY(-40%) scale(0.55) rotate(0deg) translateZ(0);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(-50%) scale(0.6) rotate(-8deg) translateZ(0);
+    }
+  }
+
+  .hero-left-col > * {
+    animation: heroFadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .hero-left-col .eyebrow-chip { animation-delay: 0.1s; }
+  .hero-left-col .hero-title { animation-delay: 0.2s; }
+  .hero-left-col .hero-desc { animation-delay: 0.3s; }
+  .hero-left-col .hero-cta-row { animation-delay: 0.4s; }
+
+  .hero-phone-front {
+    animation: phoneLoadInFront 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: 0.4s;
+  }
+  .hero-phone-behind {
+    animation: phoneLoadInBehind 1.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: 0.5s;
+  }
+
+  /* Scroll Reveal Classes */
+  .reveal-on-scroll {
+    opacity: 0;
+    transform: translateY(35px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform, opacity;
+  }
+
+  .reveal-slide-left {
+    opacity: 0;
+    transform: translateX(-40px);
+    transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform, opacity;
+  }
+
+  .reveal-slide-right {
+    opacity: 0;
+    transform: translateX(40px);
+    transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform, opacity;
+  }
+
+  /* Reveal Activation & Stagger Support */
+  .reveal-on-scroll.is-visible,
+  .reveal-slide-left.is-visible,
+  .reveal-slide-right.is-visible {
+    opacity: 1;
+    transform: translate(0) scale(1) rotate(0deg); /* reset inline translation */
+  }
+
+  /* Restore specific rotations/transforms for activated mockups */
+  .hero-phone-behind.reveal-on-scroll.is-visible {
+    transform: translateY(-50%) scale(0.6) rotate(-8deg) translateZ(0);
+  }
+  .hero-phone-front.reveal-on-scroll.is-visible {
+    transform: translate(-50%, -50%) scale(0.72) translateZ(0);
+  }
+
+  .reveal-on-scroll,
+  .reveal-slide-left,
+  .reveal-slide-right {
+    transition-delay: var(--delay, 0s);
+  }
+}
+

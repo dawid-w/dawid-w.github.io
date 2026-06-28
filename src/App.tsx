@@ -81,6 +81,36 @@ function App() {
     return () => window.removeEventListener('hashchange', handleHashChange)
   }, [])
 
+  useEffect(() => {
+    // Reveal animations on scroll
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.15,
+    }
+
+    const handleIntersect = (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible')
+          observer.unobserve(entry.target)
+        }
+      })
+    }
+
+    const observer = new IntersectionObserver(handleIntersect, observerOptions)
+    const revealElements = document.querySelectorAll(
+      '.reveal-on-scroll, .reveal-slide-left, .reveal-slide-right'
+    )
+
+    revealElements.forEach((el) => observer.observe(el))
+
+    return () => {
+      revealElements.forEach((el) => observer.unobserve(el))
+    }
+  }, [currentRoute])
+
+
   if (currentRoute === 'privacy') {
     return (
       <>
@@ -293,14 +323,14 @@ function App() {
       {/* Feature Grid Section */}
       <section id="features" className="features-section">
         <div className="container features-inner">
-          <div className="features-header">
+          <div className="features-header reveal-on-scroll">
             <h4 className="features-eyebrow">WHAT'S INSIDE</h4>
             <h2 className="features-title">Everything you need to keep the streak alive.</h2>
           </div>
           
           <div className="features-cards-row">
             {/* Card 1: Time tracking */}
-            <div className="feature-card">
+            <div className="feature-card reveal-on-scroll" style={{ '--delay': '0s' } as React.CSSProperties}>
               <div className="feature-icon-tile">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
                   <circle cx="12" cy="13" r="8" />
@@ -316,7 +346,7 @@ function App() {
             </div>
 
             {/* Card 2: Daily habits */}
-            <div className="feature-card">
+            <div className="feature-card reveal-on-scroll" style={{ '--delay': '0.15s' } as React.CSSProperties}>
               <div className="feature-icon-tile">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
                   <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
@@ -333,7 +363,7 @@ function App() {
             </div>
 
             {/* Card 3: Insightful charts */}
-            <div className="feature-card">
+            <div className="feature-card reveal-on-scroll" style={{ '--delay': '0.3s' } as React.CSSProperties}>
               <div className="feature-icon-tile">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
                   <path d="M3 3v18h18" />
@@ -354,7 +384,7 @@ function App() {
       {/* Showcase 1 — Habits (text left, phone right) */}
       <section className="container section-pad">
         <div className="showcase-row">
-          <div className="showcase-text-col">
+          <div className="showcase-text-col reveal-slide-left">
             <div className="showcase-eyebrow-chip">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
@@ -385,7 +415,7 @@ function App() {
             </div>
           </div>
 
-          <div className="showcase-phone-col">
+          <div className="showcase-phone-col reveal-slide-right">
             <div className="showcase-phone-wrapper">
               <div className="phone-mockup">
                 <img 
@@ -403,7 +433,7 @@ function App() {
       <section className="showcase-insights">
         <div className="container section-pad">
           <div className="showcase-row" style={{ flexDirection: 'row-reverse' }}>
-            <div className="showcase-text-col">
+            <div className="showcase-text-col reveal-slide-right">
               <div className="showcase-eyebrow-chip">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg">
                   <path d="M3 3v18h18" />
@@ -429,7 +459,7 @@ function App() {
               </div>
             </div>
 
-            <div className="showcase-phone-col">
+            <div className="showcase-phone-col reveal-slide-left">
               <div className="showcase-phone-wrapper">
                 <div className="phone-mockup">
                 <img 
@@ -446,7 +476,7 @@ function App() {
 
       {/* Closing CTA */}
       <section className="cta-outer">
-        <div className="cta-inner-card">
+        <div className="cta-inner-card reveal-on-scroll">
           <div className="cta-logo">
             <ChainLogo size={40} />
           </div>
