@@ -198,7 +198,7 @@ function App() {
               </a>
             </div>
             <div className="footer-mid-links">
-              <a href="#privacy">Privacy Policy</a>
+              <a href="https://thecadenceapp.eu/#privacy">Privacy Policy</a>
               <a href="mailto:cadenceappsupport@gmail.com">cadenceappsupport@gmail.com</a>
             </div>
             <span className="footer-right">&copy; 2026 Cadence &middot; Designed in Noir</span>
@@ -269,7 +269,7 @@ function App() {
               <div className="hero-phone-behind">
                 <div className="phone-mockup">
                   <img 
-                    src="/screen-detail.png" 
+                    src="/screen-charts.png" 
                     className="phone-mockup-screen" 
                     alt="Cadence weekly detail statistics mockup" 
                   />
@@ -468,7 +468,7 @@ function App() {
             </a>
           </div>
           <div className="footer-mid-links">
-            <a href="#privacy">Privacy Policy</a>
+            <a href="https://thecadenceapp.eu/#privacy">Privacy Policy</a>
             <a href="mailto:cadenceappsupport@gmail.com">cadenceappsupport@gmail.com</a>
           </div>
           <span className="footer-right">&copy; 2026 Cadence &middot; Designed in Noir</span>
