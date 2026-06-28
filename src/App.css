@@ -481,14 +481,16 @@
 
 .checklist-item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
+  text-align: left; /* Ensures left-aligned text even when showcase-text-col has text-align: center on mobile */
 }
 
 .check-bullet-icon {
   width: 22px;
   height: 22px;
   flex-shrink: 0;
+  margin-top: 1px; /* Align checkmark perfectly with the first line of text */
 }
 
 .checklist-label {
