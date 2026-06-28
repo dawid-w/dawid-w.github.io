@@ -287,6 +287,14 @@
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   will-change: transform;
+  /* Dynamic hover transition */
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), z-index 0.4s ease;
+}
+
+.hero-phone-behind:hover {
+  transform: translateY(-53%) scale(0.62) rotate(-5deg) translateZ(0);
+  box-shadow: 0 60px 110px rgba(20, 20, 22, 0.32);
+  z-index: 3; /* Lift in front of the front phone on hover */
 }
 
 .hero-phone-front {
@@ -302,6 +310,14 @@
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   will-change: transform;
+  /* Dynamic hover transition */
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.hero-phone-front:hover {
+  transform: translate(-50%, -53%) scale(0.74) translateZ(0);
+  box-shadow: 0 50px 95px rgba(20, 20, 22, 0.22);
+  z-index: 4; /* Keep above the fanned back phone */
 }
 
 /* Feature Grid Section */
@@ -498,6 +514,13 @@
   z-index: 1;
   box-shadow: 0 40px 85px rgba(20, 20, 22, 0.16);
   border-radius: 48px;
+  /* Dynamic hover transition */
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.showcase-phone-wrapper:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 50px 95px rgba(20, 20, 22, 0.22);
 }
 
 /* Showcase Specific Modifiers */
