@@ -745,6 +745,7 @@
   .phone-stage {
     height: 520px;
     margin-top: 60px; /* Push the phone mockup down to prevent overlapping the hero CTA button/text */
+    margin-bottom: 80px; /* Push the features section down to prevent the bottom of the phone mockup from overlapping its header */
   }
   .hero-phone-front {
     left: 50%;
