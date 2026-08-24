@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — Grimo AI</title>
+<meta name="description" content="How Grimo AI collects, uses and protects your data.">
+
+<link rel="icon" type="image/png" sizes="512x512" href="app-icon-6a-512.png">
+<link rel="icon" type="image/png" sizes="180x180" href="app-icon-6a-180.png">
+<link rel="apple-touch-icon" sizes="180x180" href="app-icon-6a-180.png">
+
+<style>
+  :root{
+    --ink:#1C1C1E;
+    --dark:#141414;
+    --hairline:oklch(93% 0 0);
+    --muted:oklch(48% 0 0);
+    --ease:cubic-bezier(.2,.8,.2,1);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    overflow-x:hidden;
+    background:#fff;
+    color:var(--ink);
+    font-family:-apple-system, system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--ink);text-decoration:none;transition:color .25s var(--ease)}
+  a:hover{color:#000}
+  .container{max-width:760px;margin:0 auto;padding:0 40px}
+
+  @keyframes lpUp{0%{opacity:0;transform:translateY(16px)}100%{opacity:1;transform:translateY(0)}}
+  @keyframes lpDrift{0%{transform:translate(0,0)}50%{transform:translate(-26px,24px)}100%{transform:translate(18px,-18px)}}
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{
+      animation-duration:.01ms !important;
+      animation-iteration-count:1 !important;
+      transition-duration:.01ms !important;
+      scroll-behavior:auto !important;
+    }
+  }
+
+  .nav-wrap{
+    position:sticky;top:0;z-index:50;
+    background:transparent;
+    border-bottom:1px solid transparent;
+    transition:background .4s var(--ease), box-shadow .4s var(--ease), backdrop-filter .4s var(--ease), border-color .4s var(--ease);
+  }
+  .nav-wrap.scrolled{
+    background:rgba(255,255,255,.85);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    border-color:var(--hairline);
+    box-shadow:0 1px 0 rgba(0,0,0,.04);
+  }
+  .nav{
+    display:flex;align-items:center;justify-content:space-between;
+    max-width:1140px;margin:0 auto;padding:22px 40px;
+  }
+  .nav-left{display:flex;align-items:center;gap:13px}
+  .nav-icon{width:32px;height:32px;border-radius:8px;box-shadow:0 3px 8px rgba(0,0,0,.18);transition:transform .35s var(--ease)}
+  .nav-left:hover .nav-icon{transform:scale(1.1) rotate(-4deg)}
+  .wordmark{font-size:17px;font-weight:600;letter-spacing:-0.4px}
+  .nav-right{display:flex;align-items:center;gap:26px}
+  .nav-right a{font-size:14px;color:oklch(45% 0 0)}
+  .nav-right a:hover{color:#000}
+
+  main.container{flex:1;padding:96px 40px 120px;position:relative}
+  main.container::before{
+    content:'';
+    position:absolute;
+    top:-140px;right:-160px;
+    width:440px;height:440px;
+    background:radial-gradient(circle, rgba(28,28,30,.045), transparent 70%);
+    filter:blur(30px);
+    animation:lpDrift 18s ease-in-out infinite;
+    pointer-events:none;
+    z-index:0;
+  }
+  .page-head,.policy-section{position:relative;z-index:1}
+
+  .page-head{opacity:0;animation:lpUp .7s var(--ease) .05s both}
+  .eyebrow{font-size:12.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:oklch(58% 0 0);margin-bottom:14px}
+  h1{font-size:38px;line-height:1.1;font-weight:600;letter-spacing:-1.2px;margin:0 0 8px}
+  .updated{font-size:14px;color:oklch(58% 0 0);margin-bottom:20px}
+  .lead-intro{font-size:16px;line-height:1.65;color:var(--muted);max-width:520px}
+
+  .policy-section{
+    margin-top:40px;
+    padding-top:32px;
+    border-top:1px solid var(--hairline);
+    opacity:0;
+    transform:translateY(20px);
+    transition:opacity .7s var(--ease), transform .7s var(--ease);
+  }
+  .policy-section.in-view{opacity:1;transform:translateY(0)}
+  h2{font-size:21px;font-weight:600;letter-spacing:-0.3px;margin:0 0 12px}
+  p,li{font-size:15px;line-height:1.7;color:var(--muted)}
+  ul{padding-left:20px;margin:0}
+  li{margin-bottom:8px}
+  p{margin:0 0 14px}
+  p:last-child{margin-bottom:0}
+  strong{color:var(--ink)}
+
+  footer{background:var(--dark);color:#fff;padding:44px 0}
+  .footer-row{
+    max-width:1140px;margin:0 auto;padding:0 40px;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .footer-left{display:flex;align-items:center;gap:10px}
+  .footer-left img{width:20px;height:20px;border-radius:5px;transition:transform .35s var(--ease)}
+  .footer-left:hover img{transform:scale(1.15) rotate(-6deg)}
+  .footer-left span{font-size:14px;font-weight:600;color:rgba(255,255,255,.8)}
+  .footer-right{display:flex;gap:26px}
+  .footer-right a{font-size:13.5px;color:rgba(255,255,255,.45)}
+  .footer-right a:hover{color:#fff}
+
+  @media (max-width:640px){
+    .nav{padding:18px 24px}
+    .container{padding:0 24px}
+    main.container{padding:64px 24px 90px}
+    .footer-row{padding:0 24px;flex-direction:column;gap:16px;align-items:flex-start}
+    h1{font-size:30px}
+  }
+</style>
+</head>
+<body>
+
+<div class="nav-wrap">
+  <header class="nav">
+    <a href="index.html" class="nav-left" style="cursor:pointer">
+      <img class="nav-icon" src="app-icon-6a-60.png" alt="Grimo AI icon" width="32" height="32">
+      <span class="wordmark">Grimo AI</span>
+    </a>
+    <nav class="nav-right">
+      <a href="index.html#features">Features</a>
+      <a href="index.html#pricing">Pricing</a>
+      <a href="index.html#faq">FAQ</a>
+    </nav>
+  </header>
+</div>
+
+<main class="container">
+  <div class="page-head">
+    <div class="eyebrow">Legal</div>
+    <h1>Privacy Policy</h1>
+    <div class="updated">Last updated August 24, 2026</div>
+    <p class="lead-intro">This policy explains what information Grimo AI collects, how it's used, and the choices you have. Grimo AI is built around a simple idea: you say what needs doing, and it becomes a task, event or note — so we try to collect no more than that requires.</p>
+  </div>
+
+  <section class="policy-section">
+    <h2>What we collect</h2>
+    <ul>
+      <li><strong>Account information</strong> — the email address you sign up with, so your tasks, notes and calendar stay in sync across devices.</li>
+      <li><strong>Conversation content</strong> — the messages and voice input you send to Grimo, so it can be turned into tasks, events and notes and so the assistant can hold context across a conversation.</li>
+      <li><strong>Tasks, calendar events and notes</strong> — the items Grimo creates on your behalf, stored on your device and in your account.</li>
+      <li><strong>Basic diagnostics</strong> — crash reports and performance data, used only to keep the app working reliably.</li>
+    </ul>
+  </section>
+
+  <section class="policy-section">
+    <h2>What we don't do</h2>
+    <p>We don't sell your data, and we don't use your conversations, tasks or notes to serve ads. Tasks, calendar events and notes are yours — they stay on your device and in your account, not shared with third parties for anything other than making the app function.</p>
+  </section>
+
+  <section class="policy-section">
+    <h2>How your conversation is processed</h2>
+    <p>To turn a sentence into a task, event or note, the text (and, in Voice Mode, a transcript of your speech) is sent for processing so Grimo can understand it and respond. This processing happens under a data processing agreement that restricts the data from being used to train models unrelated to providing you the service.</p>
+  </section>
+
+  <section class="policy-section">
+    <h2>Data retention</h2>
+    <p>Conversation history is kept so Grimo can maintain context across a session, and can be cleared from within the app at any time. Deleting your account removes your account data, including stored tasks, notes and conversation history, within a reasonable period.</p>
+  </section>
+
+  <section class="policy-section">
+    <h2>Your rights</h2>
+    <p>You can access, export or delete your data at any time from within the app, or by reaching out through our <a href="contact.html">Contact page</a>. If you're in a region with specific data protection rights (such as the GDPR or CCPA), those rights apply to you in full.</p>
+  </section>
+
+  <section class="policy-section">
+    <h2>Children's privacy</h2>
+    <p>Grimo AI is not directed at children under 13, and we don't knowingly collect data from them.</p>
+  </section>
+
+  <section class="policy-section">
+    <h2>Security</h2>
+    <p>We use reasonable technical and organizational measures to protect your data. No method of transmission or storage is 100% secure, but we work to keep your information safe.</p>
+  </section>
+
+  <section class="policy-section">
+    <h2>Changes to this policy</h2>
+    <p>If this policy changes in a meaningful way, we'll update the date above and, where appropriate, let you know in the app.</p>
+  </section>
+
+  <section class="policy-section">
+    <h2>Contact</h2>
+    <p>Questions about this policy or your data? Reach out any time via our <a href="contact.html">Contact page</a>.</p>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-row">
+    <a href="index.html" class="footer-left" style="cursor:pointer">
+      <img src="app-icon-6a-60.png" alt="Grimo AI icon">
+      <span>Grimo AI</span>
+    </a>
+    <div class="footer-right">
+      <a href="privacy.html">Privacy</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  var navWrap = document.querySelector('.nav-wrap');
+  function onScrollNav(){
+    if(window.scrollY > 10){ navWrap.classList.add('scrolled'); }
+    else { navWrap.classList.remove('scrolled'); }
+  }
+  window.addEventListener('scroll', onScrollNav, {passive:true});
+  onScrollNav();
+
+  var sections = document.querySelectorAll('.policy-section');
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in-view');
+          io.unobserve(entry.target);
+        }
+      });
+    }, {threshold:0.12, rootMargin:'0px 0px -60px 0px'});
+    sections.forEach(function(el){ io.observe(el); });
+  } else {
+    sections.forEach(function(el){ el.classList.add('in-view'); });
+  }
+</script>
+
+</body>
+</html>
