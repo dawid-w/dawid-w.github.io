@@ -1,22 +1,1207 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
-    <!-- SEO Meta Tags -->
-    <title>Cadence | Habits & Time Tracker in Perfect Harmony</title>
-    <meta name="description" content="A unified, premium personal tracker that brings daily habits and stopwatch-style time tracking together into a calm, distraction-free space." />
-    <meta name="keywords" content="habit tracker, time tracking, productivity app, routine manager, minimalist tracker, stopwatch log" />
-    
-    <!-- Google Fonts: Nunito & Quicksand -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grimo AI — Just say what needs doing.</title>
+<meta name="description" content="Grimo AI turns an ordinary sentence into tasks, calendar events and notes. No forms, no tapping through five screens.">
+
+<link rel="icon" type="image/png" sizes="512x512" href="app-icon-6a-512.png">
+<link rel="icon" type="image/png" sizes="180x180" href="app-icon-6a-180.png">
+<link rel="icon" type="image/png" sizes="120x120" href="app-icon-6a-120.png">
+<link rel="icon" type="image/png" sizes="60x60" href="app-icon-6a-60.png">
+<link rel="icon" type="image/png" sizes="40x40" href="app-icon-6a-40.png">
+<link rel="icon" type="image/png" sizes="29x29" href="app-icon-6a-29.png">
+<link rel="apple-touch-icon" sizes="180x180" href="app-icon-6a-180.png">
+<link rel="apple-touch-icon" sizes="120x120" href="app-icon-6a-120.png">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Grimo AI — Just say what needs doing.">
+<meta property="og:description" content="Grimo AI turns an ordinary sentence into tasks, calendar events and notes. No forms, no tapping through five screens.">
+<meta property="og:image" content="app-icon-6a-1024.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Grimo AI — Just say what needs doing.">
+<meta name="twitter:description" content="Grimo AI turns an ordinary sentence into tasks, calendar events and notes.">
+<meta name="twitter:image" content="app-icon-6a-1024.png">
+
+<style>
+  :root{
+    --ink:#1C1C1E;
+    --dark:#141414;
+    --light-bg:oklch(97.5% .003 90);
+    --card-phone-bg:oklch(95.5% .003 90);
+    --phone-bg:oklch(99% .002 90);
+    --hairline:oklch(93% 0 0);
+    --muted:oklch(48% 0 0);
+    --meta:oklch(58% 0 0);
+    --ease:cubic-bezier(.2,.8,.2,1);
+  }
+
+  *{box-sizing:border-box}
+  html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+  body{
+    margin:0;
+    background:#fff;
+    color:var(--ink);
+    font-family:-apple-system, system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--ink);text-decoration:none}
+  a:hover{color:#000}
+  h1,h2,h3,p{margin:0;text-wrap:pretty}
+  img,svg{display:block}
+  button{font-family:inherit;cursor:pointer}
+
+  .container{max-width:1140px;margin:0 auto;padding:0 40px}
+
+  .eyebrow{
+    font-size:12.5px;
+    font-weight:700;
+    letter-spacing:1.2px;
+    text-transform:uppercase;
+    margin-bottom:14px;
+  }
+
+  .orb{
+    border-radius:50%;
+    background:radial-gradient(circle at 38% 32%, #fff, oklch(72% 0 0));
+    flex-shrink:0;
+    transition:transform .35s var(--ease);
+  }
+  .nav-left:hover .orb,
+  .footer-left:hover .orb{transform:scale(1.15) rotate(8deg)}
+
+  .nav-icon{
+    width:36px;height:36px;
+    border-radius:9px;
+    flex-shrink:0;
+    box-shadow:0 3px 8px rgba(0,0,0,.18);
+    transition:transform .35s var(--ease);
+  }
+  .nav-left:hover .nav-icon{transform:scale(1.1) rotate(-4deg)}
+
+  .pill{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    border-radius:100px;
+    font-weight:600;
+    white-space:nowrap;
+    border:none;
+    transition:transform .3s var(--ease), box-shadow .3s var(--ease), background .3s var(--ease);
+  }
+  .pill:active{transform:translateY(0) scale(.96)}
+  .pill-light{background:#fff;color:var(--ink)}
+  .pill-light:hover{transform:translateY(-3px);box-shadow:0 14px 28px rgba(0,0,0,.18)}
+  .pill-dark{background:var(--ink);color:#fff}
+  .pill-dark:hover{transform:translateY(-3px);box-shadow:0 14px 28px rgba(0,0,0,.22);background:#000}
+  .pill-outline{background:transparent;color:var(--ink);border:1.4px solid oklch(88% 0 0)}
+  .pill-outline:hover{transform:translateY(-3px);border-color:oklch(70% 0 0);background:oklch(97% 0 0)}
+  .apple-icon{width:14px;height:14px;fill:currentColor;flex-shrink:0}
+
+  /* keyframes */
+  @keyframes lpOrb  { 0%{opacity:0;transform:scale(.8)} 100%{opacity:1;transform:scale(1)} }
+  @keyframes lpUp   { 0%{opacity:0;transform:translateY(14px)} 100%{opacity:1;transform:translateY(0)} }
+  @keyframes lpHalo { 0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.16)} 50%{box-shadow:0 0 0 40px rgba(255,255,255,0)} }
+  @keyframes lpHaloDark{ 0%,100%{box-shadow:0 0 0 0 rgba(28,28,30,.12)} 50%{box-shadow:0 0 0 40px rgba(28,28,30,0)} }
+  @keyframes lpFloat{ 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+  @keyframes lpWave { 0%,100%{transform:scaleY(.7)} 50%{transform:scaleY(1)} }
+  @keyframes lpDrift{ 0%{transform:translate(0,0) scale(1)} 50%{transform:translate(-30px,30px) scale(1.08)} 100%{transform:translate(20px,-20px) scale(1)} }
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{
+      animation-duration:.01ms !important;
+      animation-iteration-count:1 !important;
+      transition-duration:.01ms !important;
+      scroll-behavior:auto !important;
+    }
+  }
+
+  /* ============ HERO (light) ============ */
+  .hero{
+    background:#fff;
+    color:var(--ink);
+    padding-bottom:120px;
+    position:relative;
+    overflow:hidden;
+    border-bottom:1px solid var(--hairline);
+  }
+  .hero::before{
+    content:'';
+    position:absolute;
+    top:-220px;right:-160px;
+    width:620px;height:620px;
+    background:radial-gradient(circle, rgba(28,28,30,.05), transparent 70%);
+    filter:blur(30px);
+    animation:lpDrift 16s ease-in-out infinite;
+    pointer-events:none;
+  }
+
+  .nav-wrap{
+    position:sticky;top:0;z-index:50;
+    background:transparent;
+    border-bottom:1px solid var(--hairline);
+    transition:background .4s var(--ease), box-shadow .4s var(--ease), backdrop-filter .4s var(--ease), border-color .4s var(--ease);
+  }
+  .nav-wrap.scrolled{
+    background:rgba(255,255,255,.78);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    box-shadow:0 1px 0 rgba(0,0,0,.06);
+  }
+
+  .nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    max-width:1140px;
+    margin:0 auto;
+    padding:26px 40px;
+    position:relative;
+    z-index:1;
+  }
+  .nav-left{display:flex;align-items:center;gap:13px}
+  .wordmark{font-size:19px;font-weight:600;letter-spacing:-0.4px}
+  .nav-right{display:flex;align-items:center;gap:30px}
+  .nav-right a:not(.pill){font-size:14.5px;color:oklch(45% 0 0);white-space:nowrap}
+  .nav-right a:not(.pill):hover{color:#000}
+  .nav-download{height:38px;padding:0 20px;font-size:14.5px}
+  .nav-download .apple-icon{width:13px;height:13px}
+
+  .hero-grid{
+    max-width:1140px;
+    margin:0 auto;
+    padding:96px 40px 0;
+    display:grid;
+    grid-template-columns:1.05fr .95fr;
+    gap:64px;
+    align-items:center;
+    position:relative;
+    z-index:1;
+  }
+
+  .hero-orb{
+    width:96px;height:96px;
+    margin-bottom:38px;
+    background:radial-gradient(circle at 38% 32%, oklch(45% 0 0), oklch(18% 0 0));
+    box-shadow:0 24px 50px rgba(0,0,0,.18);
+    animation:lpOrb .7s var(--ease) both, lpHaloDark 3s ease-in-out .7s infinite, lpFloat 5s ease-in-out .7s infinite;
+  }
+  .hero h1{
+    font-size:62px;
+    line-height:1.02;
+    font-weight:600;
+    letter-spacing:-2.4px;
+    color:var(--ink);
+    animation:lpUp .6s var(--ease) .12s both;
+  }
+  .hero-lead{
+    max-width:440px;
+    color:oklch(42% 0 0);
+    font-size:19px;
+    line-height:1.55;
+    margin-top:22px;
+    animation:lpUp .6s var(--ease) .22s both;
+  }
+  .hero-cta-row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-top:40px;
+    animation:lpUp .6s var(--ease) .3s both;
+  }
+  .hero-cta{height:54px;padding:0 30px;font-size:16px}
+
+  .phone-mock{
+    animation:lpUp .7s var(--ease) .3s both;
+    display:flex;
+    justify-content:center;
+    perspective:1000px;
+  }
+  .phone-stack{position:relative}
+  .phone-bezel-front{
+    position:relative;
+    z-index:2;
+    transition:transform .4s var(--ease);
+    will-change:transform;
+  }
+  .phone-bezel{
+    width:300px;
+    border-radius:44px;
+    background:#000;
+    padding:11px;
+    box-shadow:0 40px 90px rgba(0,0,0,.22);
+  }
+  .phone-bezel-back{
+    position:absolute;
+    top:0;left:0;
+    z-index:1;
+    box-shadow:0 30px 60px rgba(0,0,0,.16);
+    opacity:0;
+    animation:lpBackPhone .7s var(--ease) .18s both;
+  }
+  @keyframes lpBackPhone{
+    0%{opacity:0;transform:translate(245px,26px) rotate(10deg) scale(.84)}
+    100%{opacity:1;transform:translate(245px,26px) rotate(10deg) scale(.92)}
+  }
+  .phone-screen{
+    position:relative;
+    border-radius:34px;
+    background:var(--phone-bg);
+    height:596px;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    color:var(--ink);
+  }
+  .back-voice-label{
+    position:absolute;top:38px;left:0;right:0;
+    text-align:center;
+    font-size:11px;font-weight:600;letter-spacing:1.1px;text-transform:uppercase;
+    color:oklch(58% 0 0);
+  }
+  .back-voice-stack{
+    flex:1;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:18px;padding:20px;
+  }
+  .back-voice-listening{font-size:15px;font-weight:600;color:var(--ink)}
+  .back-voice-stack .waveform{width:230px}
+  .phone-screen-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:34px 18px 12px;
+  }
+  .phone-screen-header .title{font-size:16px;font-weight:600}
+  .avatar-gray{width:27px;height:27px;border-radius:50%;background:oklch(88% 0 0)}
+
+  .thread{flex:1;padding:8px 16px;display:flex;flex-direction:column;gap:12px;overflow:hidden}
+  .bubble{font-size:13.5px;line-height:1.4;padding:10px 14px}
+  .bubble-user{
+    align-self:flex-end;
+    max-width:80%;
+    background:var(--ink);
+    color:#fff;
+    border-radius:19px 19px 5px 19px;
+  }
+  .bubble-assistant{
+    align-self:flex-start;
+    max-width:88%;
+    background:#fff;
+    border:1px solid var(--hairline);
+    border-radius:19px 19px 19px 5px;
+  }
+  .action-card{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:#fff;
+    border:1px solid var(--hairline);
+    border-radius:15px;
+    padding:10px 12px;
+    align-self:flex-start;
+    max-width:88%;
+  }
+  .action-icon{
+    width:26px;height:26px;
+    border-radius:8px;
+    background:var(--card-phone-bg);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .action-icon svg{width:14px;height:14px}
+  .action-title{font-size:12.5px;font-weight:600}
+  .action-sub{font-size:11px;color:oklch(52% 0 0);margin-top:2px}
+
+  .input-pill-row{padding:8px 14px 20px}
+  .input-pill{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:#fff;
+    border-radius:100px;
+    box-shadow:0 4px 14px rgba(0,0,0,.07);
+    padding:6px 6px 6px 16px;
+  }
+  .input-placeholder{font-size:13.5px;color:oklch(58% 0 0)}
+  .mic-btn{
+    width:33px;height:33px;
+    border-radius:50%;
+    background:var(--ink);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .mic-btn svg{width:14px;height:14px;stroke:#fff}
+
+  /* ============ FEATURES ============ */
+  .features{background:var(--light-bg);padding:104px 0;margin-top:104px}
+  .features .eyebrow{color:oklch(58% 0 0)}
+  .features h2{max-width:560px;margin-bottom:56px}
+
+  .row-a{
+    display:grid;
+    grid-template-columns:1.2fr .8fr;
+    gap:24px;
+    margin-bottom:24px;
+  }
+
+  .card-white{background:#fff;border-radius:24px}
+  .calendar-card{padding:34px 34px 0;overflow:hidden;display:flex;flex-direction:column}
+  .calendar-card .card-title{font-size:22px;font-weight:600;letter-spacing:-0.5px}
+  .calendar-card .card-body{max-width:400px;margin:12px 0 28px;color:var(--muted);font-size:15px;line-height:1.6}
+
+  .cal-illustration{
+    border:1px solid var(--hairline);
+    border-radius:16px 16px 0 0;
+    border-bottom:none;
+    background:oklch(99.4% .002 90);
+    padding:18px 18px 40px;
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    grid-auto-rows:min-content;
+    gap:8px 6px;
+  }
+  .cal-head{font-size:9.5px;font-weight:700;color:oklch(58% 0 0)}
+  .cal-head.weekend{color:oklch(72% 0 0)}
+  .cal-bar{
+    height:19px;
+    border-radius:5px;
+    background:oklch(93% .003 90);
+    border-left:3px solid var(--ink);
+    display:flex;
+    align-items:center;
+    padding:0 8px;
+    font-size:10px;
+    font-weight:700;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .cal-bar.b2{background:oklch(94% .003 90);border-left-color:oklch(55% 0 0)}
+  .cal-bar.b3{background:oklch(93% .003 90);border-left-color:oklch(72% 0 0)}
+  .cal-bar.b4{background:oklch(93% .003 90);border-left-color:var(--ink)}
+  .cal-label{
+    font-size:10px;
+    font-weight:700;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    align-self:center;
+    color:oklch(45% 0 0);
+  }
+
+  .voice-card{
+    background:var(--dark);
+    color:#fff;
+    border-radius:24px;
+    padding:34px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+  }
+  .voice-card .card-title{font-size:22px;font-weight:600}
+  .voice-card .card-body{color:rgba(255,255,255,.6);font-size:15px;line-height:1.6;margin:12px 0 28px}
+  .waveform{height:52px;display:flex;align-items:center;gap:4px}
+  .waveform span{
+    width:5px;border-radius:100px;flex-shrink:0;
+    transform-origin:center;
+    animation:lpWave 1.15s ease-in-out infinite;
+  }
+
+  .card-white,.voice-card,.pillar-card,.price-card{
+    transition:transform .4s var(--ease), box-shadow .4s var(--ease);
+  }
+  .card-white:hover,.voice-card:hover,.pillar-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 24px 48px rgba(0,0,0,.10);
+  }
+  .price-card.free:hover{transform:translateY(-6px);box-shadow:0 20px 40px rgba(0,0,0,.08)}
+  .price-card.premium:hover{transform:translateY(-6px);box-shadow:0 24px 48px rgba(0,0,0,.35)}
+
+  .row-b{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+  .pillar-card{
+    background:#fff;
+    border-radius:24px;
+    padding:30px;
+    position:relative;
+    overflow:hidden;
+    border:1.4px solid transparent;
+  }
+  .pillar-card::before{
+    content:'';
+    position:absolute;
+    inset:0;
+    background:radial-gradient(280px circle at var(--mx,50%) var(--my,50%), rgba(28,28,30,.055), transparent 70%);
+    opacity:0;
+    transition:opacity .4s var(--ease);
+    pointer-events:none;
+  }
+  .pillar-card:hover::before{opacity:1}
+  .pillar-card:hover{border-color:var(--hairline)}
+  .pillar-icon{
+    width:34px;height:34px;
+    border-radius:11px;
+    background:oklch(95% .003 90);
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:20px;
+    position:relative;
+    z-index:1;
+    transition:background .4s var(--ease), transform .4s var(--ease);
+  }
+  .pillar-icon svg{width:17px;height:17px;transition:stroke .4s var(--ease)}
+  .pillar-card:hover .pillar-icon{background:var(--ink);transform:scale(1.1) rotate(-6deg)}
+  .pillar-card:hover .pillar-icon svg{stroke:#fff}
+  .pillar-card .card-title{font-size:19px;font-weight:600;letter-spacing:-0.4px;margin-bottom:8px;position:relative;z-index:1}
+  .pillar-card .card-body{font-size:14.5px;color:var(--muted);line-height:1.6;position:relative;z-index:1}
+
+  /* ============ INSIDE THE APP ============ */
+  .inside{background:var(--dark);color:#fff;padding:104px 0 118px}
+  .inside .eyebrow{color:rgba(255,255,255,.5)}
+  .inside h2{max-width:600px;margin-bottom:64px}
+
+  .phones-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;align-items:start}
+  .phone-col{display:flex;flex-direction:column;gap:24px}
+  .phone-col:nth-child(1){margin-top:0}
+  .phone-col:nth-child(2){margin-top:40px}
+  .phone-col:nth-child(3){margin-top:80px}
+
+  .phone-outer{width:268px;height:583px;position:relative;margin:0 auto;transition:transform .4s var(--ease)}
+  .phone-outer:hover{transform:translateY(-8px)}
+  .phone-scale{
+    position:absolute;top:0;left:0;width:402px;height:874px;box-sizing:border-box;
+    transform:scale(.6667);transform-origin:top left;border-radius:58px;background:#000;
+    padding:11px;box-shadow:0 34px 80px rgba(0,0,0,.55);
+  }
+  .phone-inner{
+    position:relative;width:100%;height:100%;border-radius:47px;overflow:hidden;
+    background:var(--phone-bg);color:oklch(20% 0 0);display:flex;flex-direction:column;
+  }
+  .dyn-island{position:absolute;top:13px;left:50%;transform:translateX(-50%);width:104px;height:30px;border-radius:15px;background:#000;z-index:2}
+  .status-time{position:absolute;top:20px;left:28px;font-size:14px;font-weight:600;z-index:2}
+
+  .screen-header{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:58px 22px 10px;
+  }
+  .screen-header .title{font-size:19px;font-weight:700}
+  .settings-btn{
+    width:34px;height:34px;border-radius:50%;
+    background:var(--card-phone-bg);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .settings-btn svg{width:16px;height:16px}
+
+  .app-thread{flex:1;padding:12px 18px;display:flex;flex-direction:column;justify-content:flex-end;gap:11px}
+  .day-divider{text-align:center;font-size:11px;font-weight:600;color:oklch(62% 0 0)}
+  .app-bubble{font-size:14px;line-height:1.4;padding:11px 15px}
+  .app-bubble-assistant{
+    align-self:flex-start;max-width:84%;background:var(--card-phone-bg);
+    border-radius:16px 16px 16px 4px;
+  }
+  .app-bubble-user{
+    align-self:flex-end;max-width:80%;background:oklch(20% 0 0);color:#fff;
+    border-radius:16px 16px 4px 16px;
+  }
+  .app-action-card{
+    align-self:flex-start;width:82%;
+    display:flex;align-items:center;gap:10px;
+    background:#fff;border:1px solid oklch(92% 0 0);border-radius:15px;padding:11px 13px;
+  }
+  .app-action-title{font-size:13px;font-weight:600}
+  .app-action-sub{font-size:11px;color:oklch(52% 0 0);margin-top:2px}
+
+  .float-input-row{padding:10px 16px 26px}
+  .float-input{
+    display:flex;align-items:center;justify-content:space-between;
+    background:#fff;border-radius:100px;padding:6px;
+    box-shadow:0 4px 14px rgba(0,0,0,.08);
+  }
+  .float-input .placeholder{font-size:16px;padding-left:12px;color:oklch(58% 0 0)}
+  .float-input .btns{display:flex;gap:6px}
+  .float-btn{
+    width:38px;height:38px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  }
+  .float-btn.mic{background:#F2F2F0}
+  .float-btn.grid{background:var(--ink)}
+  .float-btn.mic svg{width:16px;height:16px;stroke:var(--ink)}
+  .float-btn.grid svg{width:16px;height:16px;stroke:#fff}
+
+  .task-list{flex:1;padding:6px 18px 0;display:flex;flex-direction:column;gap:10px;overflow:hidden}
+  .task-card{border-radius:14px;padding:14px}
+  .task-card.highlight{background:var(--ink);color:#fff;box-shadow:0 8px 22px rgba(0,0,0,.18)}
+  .task-card.normal{background:var(--card-phone-bg)}
+  .task-title-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .task-title-row .t{font-size:14.5px;font-weight:600;flex:1}
+  .task-title-row .when{font-size:11px;white-space:nowrap}
+  .task-card.highlight .when{color:rgba(255,255,255,.6)}
+  .task-card.normal .when{color:oklch(60% 0 0)}
+  .chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .chip{font-size:10.5px;font-weight:700;padding:4px 9px;border-radius:100px;white-space:nowrap}
+  .task-card.highlight .chip{background:rgba(255,255,255,.14);color:#fff}
+  .task-card.highlight .chip.added{background:#fff;color:var(--ink)}
+  .task-card.normal .chip{background:#fff;color:oklch(38% 0 0)}
+  .chip.high{background:oklch(93% .05 30) !important;color:oklch(40% .1 30) !important}
+
+  .voice-label{
+    position:absolute;top:64px;left:0;right:0;text-align:center;
+    font-size:12px;font-weight:600;letter-spacing:1.2px;text-transform:uppercase;
+    color:oklch(55% 0 0);z-index:1;
+  }
+  .voice-stack{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;padding:80px 30px 0;text-align:center}
+  .voice-orb-dark{
+    width:140px;height:140px;border-radius:50%;
+    background:radial-gradient(circle at 38% 32%, oklch(45% 0 0), oklch(18% 0 0));
+    animation:lpHalo 2.6s ease-in-out infinite, lpFloat 4.4s ease-in-out infinite;
+  }
+  .voice-listening{font-size:18px;font-weight:600}
+  .voice-transcript{font-size:19px;font-weight:500;line-height:1.4}
+  .voice-reply{margin-top:16px;font-size:14px;color:oklch(48% 0 0);line-height:1.5}
+  .voice-end-row{padding:0 16px 46px;display:flex;justify-content:center}
+  .voice-end-btn{
+    width:54px;height:54px;border-radius:50%;background:var(--ink);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .voice-end-btn svg{width:18px;height:18px;stroke:#fff}
+
+  .phone-caption .title{font-size:17px;font-weight:600;margin-bottom:6px}
+  .phone-caption .desc{font-size:14px;color:rgba(255,255,255,.55);line-height:1.5}
+
+  /* ============ PRICING ============ */
+  .pricing{max-width:1140px;margin:0 auto;padding:104px 40px}
+  .pricing .eyebrow{color:oklch(58% 0 0)}
+  .pricing h2{max-width:540px;margin-bottom:48px}
+  .pricing-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:800px}
+  .price-card{border-radius:24px;padding:32px}
+  .price-card.free{background:#fff;border:1.4px solid var(--hairline)}
+  .price-card.premium{background:var(--dark);color:#fff}
+  .plan-label{font-size:13px;font-weight:700;letter-spacing:.8px;color:oklch(55% 0 0)}
+  .premium .plan-label{color:rgba(255,255,255,.62)}
+  .premium-head{display:flex;align-items:center;justify-content:space-between}
+  .price-line{display:flex;align-items:baseline;gap:6px;margin:14px 0 24px}
+  .price-amount{font-size:38px;font-weight:600;letter-spacing:-1.4px}
+  .price-period{font-size:15px;color:rgba(255,255,255,.55)}
+  .bullet-list{list-style:none;margin:0 0 28px;padding:0;display:flex;flex-direction:column;gap:13px}
+  .bullet-list li{font-size:14.5px;color:oklch(38% 0 0);display:flex;gap:10px}
+  .premium .bullet-list li{color:rgba(255,255,255,.85)}
+  .bullet-list .dot{color:oklch(60% 0 0)}
+  .plan-btn{width:100%;height:48px;font-size:15px}
+
+  /* ============ FAQ ============ */
+  .faq{border-top:1px solid var(--hairline);padding:88px 0}
+  .faq-grid{max-width:1140px;margin:0 auto;padding:0 40px;display:grid;grid-template-columns:.8fr 1.2fr;gap:64px}
+  .faq h2{font-size:34px;line-height:1.12;font-weight:600;letter-spacing:-1.1px}
+  .faq-row{padding:22px 0;border-bottom:1px solid var(--hairline)}
+  .faq-row:last-child{border-bottom:none}
+  .faq-q{font-size:17px;font-weight:600;letter-spacing:-0.3px;margin-bottom:10px}
+  .faq-a{font-size:15px;line-height:1.6;color:var(--muted)}
+
+  /* ============ CLOSING CTA + FOOTER ============ */
+  .closing{background:var(--dark);color:#fff;padding:110px 0 44px;position:relative;overflow:hidden}
+  .closing::before{
+    content:'';
+    position:absolute;
+    bottom:-220px;left:50%;
+    transform:translateX(-50%);
+    width:700px;height:700px;
+    background:radial-gradient(circle, rgba(255,255,255,.07), transparent 70%);
+    filter:blur(30px);
+    animation:lpDrift 18s ease-in-out infinite reverse;
+    pointer-events:none;
+  }
+  .closing-inner{max-width:1140px;margin:0 auto;padding:0 40px;text-align:center;position:relative;z-index:1}
+  .closing-orb{width:76px;height:76px;margin:0 auto 34px;animation:lpFloat 5s ease-in-out infinite}
+  .closing h2{font-size:46px;line-height:1.06;font-weight:600;letter-spacing:-1.7px;max-width:560px;margin:0 auto}
+  .closing-cta{height:54px;padding:0 32px;font-size:16px;margin-top:36px}
+
+  .footer-row{
+    max-width:1140px;margin:90px auto 0;padding-top:26px;
+    border-top:1px solid rgba(255,255,255,.12);
+    display:flex;align-items:center;justify-content:space-between;
+    position:relative;z-index:1;
+  }
+  .footer-left{display:flex;align-items:center;gap:10px}
+  .footer-left span{font-size:14px;font-weight:600;color:rgba(255,255,255,.8)}
+  .footer-right{display:flex;gap:26px}
+  .footer-right a{font-size:13.5px;color:rgba(255,255,255,.45)}
+  .footer-right a:hover{color:#fff}
+
+  h2.section-h2{font-size:42px;line-height:1.1;font-weight:600;letter-spacing:-1.4px}
+
+  /* ============ SCROLL REVEAL ============ */
+  .reveal{
+    opacity:0;
+    transform:translateY(24px);
+    transition:opacity .7s var(--ease), transform .7s var(--ease);
+  }
+  .reveal.in-view{opacity:1;transform:translateY(0)}
+
+  .row-a .reveal:nth-child(2){transition-delay:.12s}
+  .row-b .pillar-card:nth-child(1){transition-delay:0s}
+  .row-b .pillar-card:nth-child(2){transition-delay:.1s}
+  .row-b .pillar-card:nth-child(3){transition-delay:.2s}
+  .phones-grid .phone-col:nth-child(1){transition-delay:0s}
+  .phones-grid .phone-col:nth-child(2){transition-delay:.12s}
+  .phones-grid .phone-col:nth-child(3){transition-delay:.24s}
+  .pricing-grid .price-card:nth-child(2){transition-delay:.12s}
+  .faq-row:nth-child(2){transition-delay:.06s}
+  .faq-row:nth-child(3){transition-delay:.12s}
+  .faq-row:nth-child(4){transition-delay:.18s}
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 900px){
+    .container,.pricing,.closing-inner,.footer-row{padding-left:24px;padding-right:24px}
+    .faq-grid{padding-left:24px;padding-right:24px}
+    .nav{padding:22px 24px}
+    .hero-grid{grid-template-columns:1fr;padding:64px 24px 0;gap:48px}
+    .phone-bezel-back{box-shadow:0 20px 40px rgba(0,0,0,.14)}
+    @keyframes lpBackPhone{
+      0%{opacity:0;transform:translate(70px,16px) rotate(8deg) scale(.78)}
+      100%{opacity:1;transform:translate(70px,16px) rotate(8deg) scale(.84)}
+    }
+    .hero h1{font-size:40px;letter-spacing:-1.4px}
+    .hero-lead{max-width:100%}
+    .row-a{grid-template-columns:1fr}
+    .row-b{grid-template-columns:1fr}
+    .phones-grid{grid-template-columns:1fr;gap:56px}
+    .phone-col:nth-child(1),.phone-col:nth-child(2),.phone-col:nth-child(3){margin-top:0}
+    .pricing-grid{grid-template-columns:1fr;max-width:480px}
+    .faq-grid{grid-template-columns:1fr;gap:32px}
+    h2.section-h2{font-size:30px;letter-spacing:-0.8px}
+    .faq h2{font-size:28px}
+    .closing h2{font-size:32px;letter-spacing:-1px}
+    .footer-row{flex-direction:column;gap:20px;align-items:flex-start}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="nav-wrap" id="navWrap">
+    <header class="nav">
+      <div class="nav-left">
+        <img class="nav-icon" src="app-icon-6a-60.png" alt="Grimo AI icon" width="36" height="36">
+        <span class="wordmark">Grimo AI</span>
+      </div>
+      <nav class="nav-right">
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+        <a class="pill pill-dark nav-download" href="#download">
+          <svg class="apple-icon" viewBox="0 0 384 512"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+          <span>Download</span>
+        </a>
+      </nav>
+    </header>
+  </div>
+
+  <div class="hero-grid">
+    <div>
+      <div class="orb hero-orb"></div>
+      <h1>Just say what needs doing.</h1>
+      <p class="hero-lead">Grimo AI turns an ordinary sentence into tasks, calendar events and notes. No forms, no tapping through five screens.</p>
+      <div class="hero-cta-row">
+        <a class="pill pill-dark hero-cta" id="download" href="#">
+          <svg class="apple-icon" viewBox="0 0 384 512" style="width:16px;height:16px"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+          <span>Download for iOS</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="phone-mock">
+      <div class="phone-stack">
+        <div class="phone-bezel phone-bezel-back" aria-hidden="true">
+          <div class="phone-screen">
+            <div class="back-voice-label">Voice Mode</div>
+            <div class="back-voice-stack">
+              <div class="voice-orb-dark" style="width:84px;height:84px"></div>
+              <div class="back-voice-listening">Listening...</div>
+              <div class="waveform" id="waveform-heroback"></div>
+            </div>
+          </div>
+        </div>
+      <div class="phone-bezel phone-bezel-front">
+        <div class="phone-screen">
+          <div class="phone-screen-header">
+            <span class="title">Grimo AI</span>
+            <div class="avatar-gray"></div>
+          </div>
+          <div class="thread">
+            <div class="bubble bubble-user">Call Anna Thursday after 3pm and remind me about the invoice</div>
+            <div class="bubble bubble-assistant">Done — I added two things:</div>
+            <div class="action-card">
+              <div class="action-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+              </div>
+              <div>
+                <div class="action-title">Call Anna</div>
+                <div class="action-sub">Thu Aug 20, 3:00 PM</div>
+              </div>
+            </div>
+            <div class="action-card">
+              <div class="action-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 9 17 20 6"/></svg>
+              </div>
+              <div>
+                <div class="action-title">Remind about the invoice</div>
+                <div class="action-sub">Tasks · high</div>
+              </div>
+            </div>
+          </div>
+          <div class="input-pill-row">
+            <div class="input-pill">
+              <span class="input-placeholder">Ask Grimo...</span>
+              <div class="mic-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 19v3"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURES ============ -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="eyebrow">Five Pillars</div>
+    <h2 class="section-h2">Everything that usually scatters across five apps.</h2>
+
+    <div class="row-a">
+      <div class="card-white calendar-card">
+        <div class="card-title">A calendar built for messy weeks</div>
+        <p class="card-body">A three-day trip, a workshop overlapping a meeting, a Friday deadline — all visible at once, no guesswork.</p>
+        <div class="cal-illustration">
+          <div class="cal-head">MON</div>
+          <div class="cal-head">TUE</div>
+          <div class="cal-head">WED</div>
+          <div class="cal-head">THU</div>
+          <div class="cal-head">FRI</div>
+          <div class="cal-head weekend">SAT</div>
+          <div class="cal-head weekend">SUN</div>
+
+          <div class="cal-bar" style="grid-column:1/5">Trip to Kraków</div>
+          <div style="grid-column:5/8"></div>
+
+          <div class="cal-bar b2" style="grid-column:2/7">React workshop</div>
+          <div style="grid-column:7/8"></div>
+
+          <div class="cal-bar b3" style="grid-column:2/3"></div>
+          <div class="cal-label" style="grid-column:3/7">Meeting + call, overlapping</div>
+
+          <div class="cal-bar b4" style="grid-column:5/6"></div>
+          <div class="cal-label" style="grid-column:6/9">Deadline</div>
+        </div>
+      </div>
+
+      <div class="voice-card">
+        <div>
+          <div class="card-title">Voice mode</div>
+          <p class="card-body">Hands full, on the move, kid in your arms. Hold and talk.</p>
+        </div>
+        <div class="waveform" id="waveform-feature"></div>
+      </div>
+    </div>
+
+    <div class="row-b">
+      <div class="pillar-card">
+        <div class="pillar-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 9 17 20 6"/></svg>
+        </div>
+        <div class="card-title">Tasks</div>
+        <p class="card-body">Priority and due date picked up from the way you say it.</p>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="8" y1="18" x2="20" y2="18"/><line x1="4" y1="6" x2="4.01" y2="6"/><line x1="4" y1="12" x2="4.01" y2="12"/><line x1="4" y1="18" x2="4.01" y2="18"/></svg>
+        </div>
+        <div class="card-title">Notes</div>
+        <p class="card-body">A thought dropped mid-conversation gets filed where you'll find it.</p>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        </div>
+        <div class="card-title">Chat</div>
+        <p class="card-body">One place to ask about anything, where nothing gets lost.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INSIDE THE APP ============ -->
+<section class="inside">
+  <div class="container">
+    <div class="eyebrow">Inside The App</div>
+    <h2 class="section-h2">One sentence, and the rest happens on its own.</h2>
+
+    <div class="phones-grid">
+
+      <!-- Column 1: Chat -->
+      <div class="phone-col">
+        <div class="phone-outer">
+          <div class="phone-scale">
+            <div class="phone-inner">
+              <div class="dyn-island"></div>
+              <div class="status-time">9:41</div>
+              <div class="screen-header">
+                <span class="title">Chat</span>
+                <div class="settings-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 1 1-4 0v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3a2 2 0 1 1 0-4h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.6V3a2 2 0 1 1 4 0v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.6 1H21a2 2 0 1 1 0 4h-.2a1.7 1.7 0 0 0-1.5 1z"/></svg>
+                </div>
+              </div>
+              <div class="app-thread">
+                <div class="day-divider">Today</div>
+                <div class="app-bubble app-bubble-assistant">Heads up — the React workshop starts in 30 minutes, room 4.</div>
+                <div class="app-bubble app-bubble-user">Move the dentist to Friday and remind me to send the invoice today</div>
+                <div class="app-bubble app-bubble-assistant">Done — moved one thing and added one:</div>
+                <div class="app-action-card">
+                  <div class="action-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+                  </div>
+                  <div>
+                    <div class="app-action-title">Dentist</div>
+                    <div class="app-action-sub">Moved to Fri Aug 21, 9:30 AM</div>
+                  </div>
+                </div>
+                <div class="app-action-card">
+                  <div class="action-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 9 17 20 6"/></svg>
+                  </div>
+                  <div>
+                    <div class="app-action-title">Send the invoice</div>
+                    <div class="app-action-sub">Tasks · today · high</div>
+                  </div>
+                </div>
+                <div class="app-bubble app-bubble-user">Perfect, thanks</div>
+              </div>
+              <div class="float-input-row">
+                <div class="float-input">
+                  <span class="placeholder">Ask Grimo...</span>
+                  <div class="btns">
+                    <div class="float-btn mic">
+                      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 19v3"/></svg>
+                    </div>
+                    <div class="float-btn grid">
+                      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-caption">
+          <div class="title">Say it once, in chat</div>
+          <div class="desc">Grimo replies with what it changed — and nudges you before things start.</div>
+        </div>
+      </div>
+
+      <!-- Column 2: Tasks -->
+      <div class="phone-col">
+        <div class="phone-outer">
+          <div class="phone-scale">
+            <div class="phone-inner">
+              <div class="dyn-island"></div>
+              <div class="status-time">9:41</div>
+              <div class="screen-header">
+                <span class="title">Tasks</span>
+                <div class="settings-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="#1C1C1E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 1 1-4 0v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H3a2 2 0 1 1 0-4h.2a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.6V3a2 2 0 1 1 4 0v.2a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.6 1H21a2 2 0 1 1 0 4h-.2a1.7 1.7 0 0 0-1.5 1z"/></svg>
+                </div>
+              </div>
+              <div class="task-list">
+                <div class="task-card highlight">
+                  <div class="task-title-row">
+                    <span class="t">Send the invoice</span>
+                    <span class="when">Today</span>
+                  </div>
+                  <div class="chip-row">
+                    <span class="chip">Work</span>
+                    <span class="chip added">Just added from chat</span>
+                  </div>
+                </div>
+                <div class="task-card normal">
+                  <div class="task-title-row">
+                    <span class="t">Buy concert tickets</span>
+                    <span class="when">Today, 2:20 PM</span>
+                  </div>
+                  <div class="chip-row">
+                    <span class="chip">Home</span>
+                    <span class="chip high">High</span>
+                  </div>
+                </div>
+                <div class="task-card normal">
+                  <div class="task-title-row">
+                    <span class="t">Send the weekly report</span>
+                    <span class="when">Yesterday</span>
+                  </div>
+                  <div class="chip-row">
+                    <span class="chip">Work</span>
+                  </div>
+                </div>
+                <div class="task-card normal">
+                  <div class="task-title-row">
+                    <span class="t">Study for the exam</span>
+                    <span class="when">Tomorrow</span>
+                  </div>
+                  <div class="chip-row">
+                    <span class="chip">Study</span>
+                    <span class="chip high">High</span>
+                  </div>
+                </div>
+                <div class="task-card normal">
+                  <div class="task-title-row">
+                    <span class="t">Order the birthday gift</span>
+                    <span class="when">In 3 days</span>
+                  </div>
+                  <div class="chip-row">
+                    <span class="chip">Other</span>
+                  </div>
+                </div>
+                <div class="task-card normal">
+                  <div class="task-title-row">
+                    <span class="t">Renew the parking permit</span>
+                    <span class="when">Next week</span>
+                  </div>
+                  <div class="chip-row">
+                    <span class="chip">Home</span>
+                  </div>
+                </div>
+              </div>
+              <div class="float-input-row">
+                <div class="float-input">
+                  <span class="placeholder">New task...</span>
+                  <div class="btns">
+                    <div class="float-btn mic">
+                      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 19v3"/></svg>
+                    </div>
+                    <div class="float-btn grid">
+                      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-caption">
+          <div class="title">It shows up where it belongs</div>
+          <div class="desc">The invoice you mentioned is already at the top of Tasks, dated and prioritised.</div>
+        </div>
+      </div>
+
+      <!-- Column 3: Voice -->
+      <div class="phone-col">
+        <div class="phone-outer">
+          <div class="phone-scale">
+            <div class="phone-inner">
+              <div class="dyn-island"></div>
+              <div class="status-time">9:41</div>
+              <div class="voice-label">Voice Mode</div>
+              <div class="voice-stack">
+                <div class="voice-orb-dark"></div>
+                <div class="voice-listening">Listening...</div>
+                <div>
+                  <div class="voice-transcript">&ldquo;What do I have today, and push the gym to tomorrow evening.&rdquo;</div>
+                  <div class="voice-reply">Standup at 9, the workshop at 11:30 and a call with Anna at 3. Gym moved to tomorrow, 6:30 PM.</div>
+                </div>
+                <div class="waveform" id="waveform-phone"></div>
+              </div>
+              <div class="voice-end-row">
+                <div class="voice-end-btn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="6" y1="18" x2="18" y2="6"/></svg>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-caption">
+          <div class="title">Or just talk it through</div>
+          <div class="desc">Hands-free voice mode reads back your day and moves things while you keep walking.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section class="pricing" id="pricing">
+  <div class="eyebrow">Pricing</div>
+  <h2 class="section-h2">Start free. Pay once it becomes part of your day.</h2>
+
+  <div class="pricing-grid">
+    <div class="price-card free">
+      <div class="plan-label">FREE</div>
+      <div class="price-line">
+        <span class="price-amount">$0</span>
+      </div>
+      <ul class="bullet-list">
+        <li><span class="dot">·</span> Unlimited tasks, calendar and notes</li>
+        <li><span class="dot">·</span> Voice mode</li>
+      </ul>
+      <a class="pill pill-outline plan-btn" href="#download">
+        <svg class="apple-icon" viewBox="0 0 384 512"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+        <span>Download</span>
+      </a>
+    </div>
+
+    <div class="price-card premium">
+      <div class="premium-head">
+        <div class="plan-label">PREMIUM</div>
+        <div class="orb" style="width:24px;height:24px"></div>
+      </div>
+      <div class="price-line">
+        <span class="price-amount" id="price-amount">$4.99</span>
+        <span class="price-period">/ month</span>
+      </div>
+      <ul class="bullet-list">
+        <li><span class="dot">·</span> A much higher conversation allowance</li>
+        <li><span class="dot">·</span> Longer, more complex requests</li>
+        <li><span class="dot">·</span> Priority responses</li>
+      </ul>
+      <a class="pill pill-light plan-btn" href="#download">Go Premium</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="faq" id="faq">
+  <div class="faq-grid">
+    <h2>Frequently asked</h2>
+    <div>
+      <div class="faq-row">
+        <div class="faq-q">Is there a limit on conversations?</div>
+        <div class="faq-a">There is a fair-use allowance rather than a fixed number — how far it goes depends on how long and complex your requests are. Premium raises it considerably.</div>
+      </div>
+      <div class="faq-row">
+        <div class="faq-q">What happens when I reach it?</div>
+        <div class="faq-a">Tasks, calendar and notes keep working exactly as before. Only the conversation pauses, and it resets shortly after.</div>
+      </div>
+      <div class="faq-row">
+        <div class="faq-q">Can I cancel anytime?</div>
+        <div class="faq-a">Yes, one tap in settings. Premium runs until the end of the paid period.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CLOSING CTA + FOOTER ============ -->
+<section class="closing">
+  <div class="closing-inner">
+    <div class="orb closing-orb"></div>
+    <h2>Stop writing lists. Just say it.</h2>
+    <a class="pill pill-light closing-cta" href="#download">
+      <svg class="apple-icon" viewBox="0 0 384 512" style="width:16px;height:16px"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+      <span>Download for iOS</span>
+    </a>
+  </div>
+
+  <div class="footer-row">
+    <div class="footer-left">
+      <div class="orb" style="width:20px;height:20px"></div>
+      <span>Grimo AI</span>
+    </div>
+    <div class="footer-right">
+      <a href="privacy.html">Privacy</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </div>
+</section>
+
+<script>
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Waveform heights cycle, shared by feature card and phone 3
+  var heights = [12,26,44,20,34,52,24,38,16,28,12,22,40,18,30,48,22,36,14,26,44,20,34,52,24,38];
+
+  function buildWaveform(id, activeCount, activeColor, restColor){
+    var el = document.getElementById(id);
+    if(!el) return;
+    var html = '';
+    for(var i=0;i<26;i++){
+      var color = i < activeCount ? activeColor : restColor;
+      var delay = (i * 0.045).toFixed(3);
+      var anim = reduceMotion ? 'none' : ('lpWave 1.15s ease-in-out ' + delay + 's infinite');
+      html += '<span style="height:'+heights[i]+'px;background:'+color+';animation:'+anim+'"></span>';
+    }
+    el.innerHTML = html;
+  }
+
+  buildWaveform('waveform-feature', 13, 'rgba(255,255,255,.9)', 'rgba(255,255,255,.35)');
+  buildWaveform('waveform-phone', 15, 'oklch(24% 0 0)', 'oklch(84% 0 0)');
+  buildWaveform('waveform-heroback', 9, 'oklch(24% 0 0)', 'oklch(84% 0 0)');
+
+  // Sticky nav gains a blurred background once the page scrolls
+  var navWrap = document.getElementById('navWrap');
+  function onScrollNav(){
+    if(window.scrollY > 10){ navWrap.classList.add('scrolled'); }
+    else { navWrap.classList.remove('scrolled'); }
+  }
+  window.addEventListener('scroll', onScrollNav, {passive:true});
+  onScrollNav();
+
+  // Scroll-triggered reveal for below-the-fold content
+  var revealSelectors = [
+    '.features .eyebrow', '.features h2',
+    '.row-a > *',
+    '.row-b .pillar-card',
+    '.inside .eyebrow', '.inside h2',
+    '.phone-col',
+    '.pricing .eyebrow', '.pricing h2',
+    '.price-card',
+    '.faq h2', '.faq-row',
+    '.closing-orb', '.closing h2', '.closing-cta'
+  ];
+  var revealEls = document.querySelectorAll(revealSelectors.join(','));
+  revealEls.forEach(function(el){ el.classList.add('reveal'); });
+
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){
+          entry.target.classList.add('in-view');
+          io.unobserve(entry.target);
+        }
+      });
+    }, {threshold:0.15, rootMargin:'0px 0px -60px 0px'});
+    revealEls.forEach(function(el){ io.observe(el); });
+  } else {
+    revealEls.forEach(function(el){ el.classList.add('in-view'); });
+  }
+
+  // Cursor-tracking spotlight on the Five Pillars tiles
+  if(!reduceMotion){
+    document.querySelectorAll('.pillar-card').forEach(function(card){
+      card.addEventListener('mousemove', function(e){
+        var rect = card.getBoundingClientRect();
+        card.style.setProperty('--mx', ((e.clientX - rect.left) / rect.width * 100) + '%');
+        card.style.setProperty('--my', ((e.clientY - rect.top) / rect.height * 100) + '%');
+      });
+    });
+  }
+
+  // Subtle cursor-tilt on the hero phone
+  var heroGrid = document.querySelector('.hero-grid');
+  var heroBezel = document.querySelector('.phone-bezel-front');
+  if(heroGrid && heroBezel && !reduceMotion && window.matchMedia('(pointer:fine)').matches){
+    heroGrid.addEventListener('mousemove', function(e){
+      var rect = heroGrid.getBoundingClientRect();
+      var x = (e.clientX - rect.left) / rect.width - 0.5;
+      var y = (e.clientY - rect.top) / rect.height - 0.5;
+      heroBezel.style.transform = 'rotateY(' + (x * 10) + 'deg) rotateX(' + (-y * 10) + 'deg)';
+    });
+    heroGrid.addEventListener('mouseleave', function(){
+      heroBezel.style.transform = '';
+    });
+  }
+</script>
+
+</body>
 </html>
