@@ -102,12 +102,20 @@
   }
   .policy-section.in-view{opacity:1;transform:translateY(0)}
   h2{font-size:21px;font-weight:600;letter-spacing:-0.3px;margin:0 0 12px}
+  h3{font-size:16.5px;font-weight:600;letter-spacing:-0.2px;color:var(--ink);margin:22px 0 6px}
+  h3:first-of-type{margin-top:0}
   p,li{font-size:15px;line-height:1.7;color:var(--muted)}
   ul{padding-left:20px;margin:0}
   li{margin-bottom:8px}
   p{margin:0 0 14px}
   p:last-child{margin-bottom:0}
   strong{color:var(--ink)}
+
+  .policy-table{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
+  .policy-table th,.policy-table td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--hairline);vertical-align:top}
+  .policy-table th{font-size:12px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:oklch(55% 0 0)}
+  .policy-table td{color:var(--muted)}
+  .table-scroll{overflow-x:auto}
 
   footer{background:var(--dark);color:#fff;padding:44px 0}
   .footer-row{
@@ -151,58 +159,116 @@
   <div class="page-head">
     <div class="eyebrow">Legal</div>
     <h1>Privacy Policy</h1>
-    <div class="updated">Last updated August 24, 2026</div>
-    <p class="lead-intro">This policy explains what information Grimo AI collects, how it's used, and the choices you have. Grimo AI is built around a simple idea: you say what needs doing, and it becomes a task, event or note — so we try to collect no more than that requires.</p>
+    <div class="updated">Effective date: August 27, 2026</div>
+    <p class="lead-intro">This Privacy Policy explains how Grimo AI ("we," "us," "the App") collects, uses, and protects your information. Grimo AI is a personal productivity assistant that helps you manage tasks, calendar events, and notes through a chat and voice interface. If you have questions about this policy, contact us at <a href="mailto:cadenceappsupport@gmail.com">cadenceappsupport@gmail.com</a>.</p>
   </div>
 
   <section class="policy-section">
-    <h2>What we collect</h2>
+    <h2>Information We Collect</h2>
+
+    <h3>Account information</h3>
+    <p>When you sign in with Apple or Google, we receive your name and email address (or a private relay address, if you use Apple's "Hide My Email") to create and identify your account. We do not collect a password — authentication is handled entirely by Apple or Google.</p>
+
+    <h3>Content you create</h3>
+    <p>Tasks, calendar events, notes, and chat messages you create in the App are stored so the App can function and so your data is available across your sessions. This is the core content the App exists to manage.</p>
+
+    <h3>Voice and microphone</h3>
+    <p>If you use voice mode or dictation, the App accesses your microphone to record audio. Audio is converted to text using your device's built-in speech recognition and is not stored as an audio file after the conversion completes.</p>
+
+    <h3>Photos (optional)</h3>
+    <p>If the App requests photo library access, this is only used if you choose to attach an image to a message or note — we do not access your photo library otherwise.</p>
+
+    <h3>Chat context sent to AI providers</h3>
+    <p>To generate responses, your recent conversation history and relevant task/event/note content is sent to Google's Gemini API. If you use voice mode, the assistant's text responses are sent to OpenAI to generate spoken audio. Neither provider is authorized by us to use this content to train their models on our behalf beyond what's necessary to provide the response. You can clear your chat history at any time in Settings, which reduces how much context is sent on future requests.</p>
+
+    <h3>Subscription and payment information</h3>
+    <p>If you purchase a subscription, the transaction is handled entirely by the Apple App Store and processed by RevenueCat, our subscription-management provider. We never see or store your payment card details. RevenueCat provides us with your subscription status (active, expired, etc.) so the App can unlock the correct features.</p>
+
+    <h3>Technical information</h3>
+    <p>Our backend infrastructure (Supabase) automatically logs standard technical information needed to operate the service, such as IP address and request timestamps, as part of normal server operation. We do not currently use any third-party analytics or advertising SDKs.</p>
+  </section>
+
+  <section class="policy-section">
+    <h2>How We Use Your Information</h2>
+    <p>We use the information above to:</p>
     <ul>
-      <li><strong>Account information</strong> — the email address you sign up with, so your tasks, notes and calendar stay in sync across devices.</li>
-      <li><strong>Conversation content</strong> — the messages and voice input you send to Grimo, so it can be turned into tasks, events and notes and so the assistant can hold context across a conversation.</li>
-      <li><strong>Tasks, calendar events and notes</strong> — the items Grimo creates on your behalf, stored on your device and in your account.</li>
-      <li><strong>Basic diagnostics</strong> — crash reports and performance data, used only to keep the app working reliably.</li>
+      <li>Provide, maintain, and personalize the App's core features</li>
+      <li>Authenticate your account and keep your data synced across sessions</li>
+      <li>Generate AI responses and voice replies to your requests</li>
+      <li>Process subscription purchases and manage your access to paid features</li>
+      <li>Diagnose and fix technical problems</li>
     </ul>
+    <p style="margin-top:14px">We do not sell your personal information, and we do not use your content to serve you advertising.</p>
   </section>
 
   <section class="policy-section">
-    <h2>What we don't do</h2>
-    <p>We don't sell your data, and we don't use your conversations, tasks or notes to serve ads. Tasks, calendar events and notes are yours — they stay on your device and in your account, not shared with third parties for anything other than making the app function.</p>
+    <h2>Third-Party Services We Use</h2>
+    <div class="table-scroll">
+      <table class="policy-table">
+        <thead>
+          <tr><th>Service</th><th>Purpose</th><th>What it receives</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Apple / Google Sign-In</td><td>Authentication</td><td>Name, email</td></tr>
+          <tr><td>Supabase</td><td>Database and backend hosting</td><td>All account and content data</td></tr>
+          <tr><td>Google Gemini API</td><td>AI chat responses</td><td>Conversation content sent for a response</td></tr>
+          <tr><td>OpenAI</td><td>Voice mode speech synthesis</td><td>Text being converted to speech</td></tr>
+          <tr><td>RevenueCat</td><td>Subscription management</td><td>Purchase and subscription status</td></tr>
+          <tr><td>Apple App Store</td><td>Payment processing</td><td>Payment details (never shared with us)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin-top:14px">Each of these providers processes data under their own privacy policy and may store information outside your country of residence, including in the United States.</p>
   </section>
 
   <section class="policy-section">
-    <h2>How your conversation is processed</h2>
-    <p>To turn a sentence into a task, event or note, the text (and, in Voice Mode, a transcript of your speech) is sent for processing so Grimo can understand it and respond. This processing happens under a data processing agreement that restricts the data from being used to train models unrelated to providing you the service.</p>
+    <h2>Data Retention</h2>
+    <p>We retain your account and content data for as long as your account is active. Chat history can be cleared by you at any time in Settings, which permanently deletes those messages. When you delete your account (available in Settings), your data is permanently removed from our systems, except where we are required to retain limited records by law (e.g., transaction records for tax purposes).</p>
   </section>
 
   <section class="policy-section">
-    <h2>Data retention</h2>
-    <p>Conversation history is kept so Grimo can maintain context across a session, and can be cleared from within the app at any time. Deleting your account removes your account data, including stored tasks, notes and conversation history, within a reasonable period.</p>
+    <h2>Your Rights</h2>
+    <p>Depending on where you live, you may have the right to:</p>
+    <ul>
+      <li>Access the personal data we hold about you</li>
+      <li>Correct inaccurate data</li>
+      <li>Request deletion of your data (you can also do this yourself in-app)</li>
+      <li>Receive a copy of your data in a portable format</li>
+      <li>Object to or restrict certain processing</li>
+      <li>Withdraw consent at any time, where processing is based on consent</li>
+    </ul>
+    <p style="margin-top:14px">If you are in the European Economic Area or UK, you also have the right to lodge a complaint with your local data protection supervisory authority.</p>
+    <p>To exercise any of these rights, contact us at <a href="mailto:cadenceappsupport@gmail.com">cadenceappsupport@gmail.com</a>.</p>
   </section>
 
   <section class="policy-section">
-    <h2>Your rights</h2>
-    <p>You can access, export or delete your data at any time from within the app, or by reaching out through our <a href="contact.html">Contact page</a>. If you're in a region with specific data protection rights (such as the GDPR or CCPA), those rights apply to you in full.</p>
+    <h2>Account Deletion</h2>
+    <p>You can permanently delete your account and all associated data at any time from Settings → Delete Account. This action is irreversible.</p>
   </section>
 
   <section class="policy-section">
-    <h2>Children's privacy</h2>
-    <p>Grimo AI is not directed at children under 13, and we don't knowingly collect data from them.</p>
+    <h2>Children's Privacy</h2>
+    <p>Grimo AI is not directed at children under 16, and we do not knowingly collect personal information from children. If you believe a child has provided us with personal information, contact us and we will delete it.</p>
+  </section>
+
+  <section class="policy-section">
+    <h2>International Data Transfers</h2>
+    <p>Because we use service providers based in the United States (Google, OpenAI, RevenueCat), your information may be transferred to and processed in countries outside your country of residence, which may have different data protection laws. We take steps to ensure these providers offer an adequate level of protection for your data.</p>
   </section>
 
   <section class="policy-section">
     <h2>Security</h2>
-    <p>We use reasonable technical and organizational measures to protect your data. No method of transmission or storage is 100% secure, but we work to keep your information safe.</p>
+    <p>We use reasonable technical and organizational measures to protect your information, including encrypted connections and access controls on our database. No method of transmission or storage is 100% secure, and we cannot guarantee absolute security.</p>
   </section>
 
   <section class="policy-section">
-    <h2>Changes to this policy</h2>
-    <p>If this policy changes in a meaningful way, we'll update the date above and, where appropriate, let you know in the app.</p>
+    <h2>Changes to This Policy</h2>
+    <p>We may update this Privacy Policy from time to time. If we make material changes, we will notify you through the App or by other reasonable means before the change takes effect.</p>
   </section>
 
   <section class="policy-section">
-    <h2>Contact</h2>
-    <p>Questions about this policy or your data? Reach out any time via our <a href="contact.html">Contact page</a>.</p>
+    <h2>Contact Us</h2>
+    <p><strong>Grimo AI</strong><br>Email: <a href="mailto:cadenceappsupport@gmail.com">cadenceappsupport@gmail.com</a></p>
   </section>
 </main>
 
@@ -214,7 +280,7 @@
     </a>
     <div class="footer-right">
       <a href="privacy.html">Privacy</a>
-      <a href="contact.html">Contact</a>
+      <a href="mailto:cadenceappsupport@gmail.com">cadenceappsupport@gmail.com</a>
     </div>
   </div>
 </footer>
