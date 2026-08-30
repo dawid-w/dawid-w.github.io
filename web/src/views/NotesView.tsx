@@ -1,7 +1,9 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useT } from '../i18n';
 import { useAppStore } from '../services/store';
 import { SearchIcon, PlusIcon } from '../components/Icons';
+
+const EMPTY_NOTE_REMOVE_DELAY = 220;
 
 export const NotesView: React.FC = () => {
   const t = useT();
@@ -12,6 +14,7 @@ export const NotesView: React.FC = () => {
 
   const [query, setQuery] = useState('');
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [removingId, setRemovingId] = useState<string | null>(null);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -22,9 +25,34 @@ export const NotesView: React.FC = () => {
 
   const selected = notes.find((n) => n.id === selectedId) || null;
 
+  // Leaving a blank note behind (created it, then jumped to another one without typing
+  // anything) would otherwise litter the list with empty rows — fade it out and drop it
+  // instead, same as if it had never been created.
+  const selectedRef = useRef(selected);
+  selectedRef.current = selected;
+  useEffect(() => {
+    return () => {
+      const note = selectedRef.current;
+      if (note && note.content.trim() === '') removeNote(note.id);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const switchTo = (nextId: string) => {
+    if (selected && selected.id !== nextId && selected.content.trim() === '') {
+      const emptyId = selected.id;
+      setRemovingId(emptyId);
+      window.setTimeout(() => {
+        removeNote(emptyId);
+        setRemovingId((cur) => (cur === emptyId ? null : cur));
+      }, EMPTY_NOTE_REMOVE_DELAY);
+    }
+    setSelectedId(nextId);
+  };
+
   const handleNewNote = () => {
     const note = addNote({ content: '' });
-    setSelectedId(note.id);
+    switchTo(note.id);
   };
 
   const formatDate = (iso: string) =>
@@ -57,7 +85,11 @@ export const NotesView: React.FC = () => {
               const firstLine = note.content.split('\n')[0] || t('notes.placeholder');
               const snippet = note.content.split('\n').slice(1).join(' ');
               return (
-                <button key={note.id} className={`note-row${selectedId === note.id ? ' selected' : ''}`} onClick={() => setSelectedId(note.id)}>
+                <button
+                  key={note.id}
+                  className={`note-row${selectedId === note.id ? ' selected' : ''}${removingId === note.id ? ' removing' : ''}`}
+                  onClick={() => switchTo(note.id)}
+                >
                   <div className="note-row-top">
                     <span className="note-row-title">{firstLine}</span>
                     <span className="note-row-date">{formatDate(note.createdAt)}</span>
