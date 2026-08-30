@@ -2,10 +2,9 @@ import React, { useMemo, useState } from 'react';
 import { useT } from '../i18n';
 import { useAppStore } from '../services/store';
 import { Task } from '../types';
-import { Checkbox } from '../components/Atoms';
+import { Toggle } from '../components/Atoms';
 import { PlusIcon } from '../components/Icons';
 
-type Filter = 'active' | 'completed' | 'all';
 type Priority = Task['priority'];
 const PRIORITY_ORDER: Priority[] = ['high', 'medium', 'low'];
 
@@ -16,14 +15,11 @@ export const TasksView: React.FC = () => {
   const removeTask = useAppStore((s) => s.removeTask);
   const addTask = useAppStore((s) => s.addTask);
 
-  const [filter, setFilter] = useState<Filter>('active');
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const filtered = useMemo(() => {
-    if (filter === 'active') return tasks.filter((t) => t.status !== 'done');
-    if (filter === 'completed') return tasks.filter((t) => t.status === 'done');
-    return tasks;
-  }, [tasks, filter]);
+  // Done tasks are hidden entirely — marking a task done behaves like deleting it
+  // from this view, not moving it to a separate completed list.
+  const filtered = useMemo(() => tasks.filter((task) => task.status !== 'done'), [tasks]);
 
   // Real data doesn't have a due date on tasks — grouping by priority (which is real)
   // instead of the design doc's fictional Today/Tomorrow/This week date buckets.
@@ -34,7 +30,7 @@ export const TasksView: React.FC = () => {
     })).filter((g) => g.items.length > 0);
   }, [filtered]);
 
-  const selected = tasks.find((task) => task.id === selectedId) || null;
+  const selected = filtered.find((task) => task.id === selectedId) || null;
 
   const toggleDone = (task: Task) => {
     updateTask(task.id, { status: task.status === 'done' ? 'todo' : 'done' });
@@ -43,7 +39,6 @@ export const TasksView: React.FC = () => {
   const handleNewTask = () => {
     const newTask = addTask({ title: t('tasks.newTask'), category: '', status: 'todo', priority: 'medium' });
     setSelectedId(newTask.id);
-    setFilter('active');
   };
 
   const priorityLabel = (p: Priority) => t(`tasks.priority${p.charAt(0).toUpperCase()}${p.slice(1)}`);
@@ -52,17 +47,6 @@ export const TasksView: React.FC = () => {
     <>
       <div className="topbar">
         <span className="view-title">{t('tasks.title')}</span>
-        <div className="segmented">
-          <button className={filter === 'active' ? 'active' : ''} onClick={() => setFilter('active')}>
-            {t('tasks.active')}
-          </button>
-          <button className={filter === 'completed' ? 'active' : ''} onClick={() => setFilter('completed')}>
-            {t('tasks.completed')}
-          </button>
-          <button className={filter === 'all' ? 'active' : ''} onClick={() => setFilter('all')}>
-            {t('tasks.all')}
-          </button>
-        </div>
         <div className="topbar-right">
           <button className="pill pill-ink" onClick={handleNewTask}>
             <PlusIcon size={13} color="#fff" strokeWidth={2.2} />
@@ -87,9 +71,8 @@ export const TasksView: React.FC = () => {
                 <div className="task-rows">
                   {group.items.map((task) => (
                     <button key={task.id} className={`task-row${selectedId === task.id ? ' selected' : ''}`} onClick={() => setSelectedId(task.id)}>
-                      <Checkbox checked={task.status === 'done'} onChange={() => toggleDone(task)} ariaLabel={task.title} />
                       <div className="task-row-body">
-                        <div className={`task-row-title${task.status === 'done' ? ' done' : ''}`}>{task.title || t('tasks.titlePlaceholder')}</div>
+                        <div className="task-row-title">{task.title || t('tasks.titlePlaceholder')}</div>
                         {task.category && <div className="task-row-meta">{task.category}</div>}
                       </div>
                       {task.category && <span className="tag-chip tag-neutral">{task.category.toUpperCase()}</span>}
@@ -117,6 +100,11 @@ export const TasksView: React.FC = () => {
               />
 
               <div className="detail-row">
+                <span className="detail-label">{t('tasks.markDone')}</span>
+                <Toggle on={selected.status === 'done'} onChange={() => toggleDone(selected)} ariaLabel={t('tasks.markDone')} />
+              </div>
+
+              <div className="detail-row">
                 <span className="detail-label">{t('tasks.priority')}</span>
                 <div className="segmented">
                   {PRIORITY_ORDER.map((p) => (
@@ -138,7 +126,7 @@ export const TasksView: React.FC = () => {
               </div>
 
               <button
-                className="pill pill-ghost"
+                className="pill pill-danger"
                 style={{ marginTop: 20, alignSelf: 'flex-start' }}
                 onClick={() => {
                   if (window.confirm(t('tasks.deleteConfirm'))) {

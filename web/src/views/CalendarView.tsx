@@ -4,7 +4,7 @@ import { useAppStore } from '../services/store';
 import { CalendarEvent, EventCategory } from '../types';
 import { getCategoryStyle } from '../constants/eventCategories';
 import { assignEventColorVariants } from '../utils/calendarColorVariants';
-import { sendChatMessage } from '../services/ai';
+import { ChatPanel } from '../components/ChatPanel';
 import { ChevronLeftIcon, ChevronRightIcon } from '../components/Icons';
 
 type CalMode = 'week' | 'month';
@@ -53,22 +53,21 @@ function timeToHourFraction(time?: string): number {
 export const CalendarView: React.FC = () => {
   const t = useT();
   const events = useAppStore((s) => s.events);
+  const updateEvent = useAppStore((s) => s.updateEvent);
+  const removeEvent = useAppStore((s) => s.removeEvent);
   const [mode, setMode] = useState<CalMode>('month');
   const [anchor, setAnchor] = useState(() => new Date());
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const todayStr = toDateStr(new Date());
   const colorVariants = useMemo(() => assignEventColorVariants(events), [events]);
+  const selected = events.find((ev) => ev.id === selectedId) || null;
 
   const goPrev = () => setAnchor((d) => (mode === 'week' ? addDays(d, -7) : new Date(d.getFullYear(), d.getMonth() - 1, 1)));
   const goNext = () => setAnchor((d) => (mode === 'week' ? addDays(d, 7) : new Date(d.getFullYear(), d.getMonth() + 1, 1)));
   const goToday = () => setAnchor(new Date());
 
   const monthLabel = anchor.toLocaleDateString(document.documentElement.lang || 'en', { month: 'long', year: 'numeric' });
-
-  const handlePrompt = (text: string) => {
-    window.dispatchEvent(new CustomEvent('grimo:navigate', { detail: 'chat' }));
-    sendChatMessage(text);
-  };
 
   return (
     <>
@@ -97,29 +96,119 @@ export const CalendarView: React.FC = () => {
 
       <div className="main-body">
         {mode === 'week' ? (
-          <WeekGrid anchor={anchor} events={events} todayStr={todayStr} colorVariants={colorVariants} weekdayLabel={(i) => t(`calendar.${WEEKDAY_KEYS[i]}`)} />
+          <WeekGrid
+            anchor={anchor}
+            events={events}
+            todayStr={todayStr}
+            colorVariants={colorVariants}
+            weekdayLabel={(i) => t(`calendar.${WEEKDAY_KEYS[i]}`)}
+            selectedId={selectedId}
+            onSelect={setSelectedId}
+          />
         ) : (
-          <MonthGrid anchor={anchor} events={events} todayStr={todayStr} colorVariants={colorVariants} moreLabel={(n) => t('calendar.moreEvents', { count: n })} />
+          <MonthGrid
+            anchor={anchor}
+            events={events}
+            todayStr={todayStr}
+            colorVariants={colorVariants}
+            moreLabel={(n) => t('calendar.moreEvents', { count: n })}
+            selectedId={selectedId}
+            onSelect={setSelectedId}
+          />
         )}
 
-        <div className="cal-side-panel">
-          <div className="context-label">{t('calendar.askAssistant')}</div>
-          <button className="prompt-card" onClick={() => handlePrompt(t('calendar.promptFindTime'))}>
-            {t('calendar.promptFindTime')}
-          </button>
-          <button className="prompt-card" onClick={() => handlePrompt(t('calendar.promptFreeTime'))}>
-            {t('calendar.promptFreeTime')}
-          </button>
+        <div className="cal-right-panel">
+          <div className="cal-event-detail">
+            {!selected ? (
+              <div className="empty-state">
+                <div className="empty-state-body">{t('calendar.selectEvent')}</div>
+              </div>
+            ) : (
+              <>
+                <div className="context-label">{t('calendar.eventDetails')}</div>
+                <input
+                  className="detail-title-input"
+                  value={selected.title}
+                  onChange={(e) => updateEvent(selected.id, { title: e.target.value })}
+                  placeholder={t('calendar.titlePlaceholder')}
+                />
 
-          <div className="cal-divider" />
+                <div className="detail-row">
+                  <span className="detail-label">{t('calendar.date')}</span>
+                  <input
+                    type="date"
+                    className="detail-inline-input"
+                    value={selected.date}
+                    onChange={(e) => updateEvent(selected.id, { date: e.target.value })}
+                  />
+                </div>
 
-          <div className="context-label">{t('calendar.categories')}</div>
-          {ALL_CATEGORIES.map((cat) => (
-            <div key={cat} className="legend-row">
-              <span className="legend-swatch" style={{ background: getCategoryStyle(cat, 0).rail }} />
-              {t(CATEGORY_LABEL_KEY[cat])}
-            </div>
-          ))}
+                <div className="detail-row">
+                  <span className="detail-label">{t('calendar.time')}</span>
+                  <input
+                    type="time"
+                    className="detail-inline-input"
+                    value={selected.time || ''}
+                    onChange={(e) => updateEvent(selected.id, { time: e.target.value || undefined })}
+                  />
+                </div>
+
+                <div className="detail-row">
+                  <span className="detail-label">{t('calendar.endTime')}</span>
+                  <input
+                    type="time"
+                    className="detail-inline-input"
+                    value={selected.endTime || ''}
+                    onChange={(e) => updateEvent(selected.id, { endTime: e.target.value || undefined })}
+                  />
+                </div>
+
+                <div className="detail-row">
+                  <span className="detail-label">{t('calendar.location')}</span>
+                  <input
+                    className="detail-inline-input"
+                    value={selected.location || ''}
+                    onChange={(e) => updateEvent(selected.id, { location: e.target.value || undefined })}
+                    placeholder={t('calendar.location')}
+                  />
+                </div>
+
+                <div className="detail-row" style={{ border: 'none' }}>
+                  <span className="detail-label">{t('calendar.category')}</span>
+                  <div className="segmented" style={{ flexWrap: 'wrap', justifyContent: 'flex-end' }}>
+                    {ALL_CATEGORIES.map((cat) => (
+                      <button
+                        key={cat}
+                        className={selected.category === cat ? 'active' : ''}
+                        onClick={() => updateEvent(selected.id, { category: cat })}
+                      >
+                        {t(CATEGORY_LABEL_KEY[cat])}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <button
+                  className="pill pill-danger"
+                  style={{ marginTop: 16, alignSelf: 'flex-start' }}
+                  onClick={() => {
+                    if (window.confirm(t('calendar.deleteConfirm'))) {
+                      removeEvent(selected.id);
+                      setSelectedId(null);
+                    }
+                  }}
+                >
+                  {t('common.delete')}
+                </button>
+              </>
+            )}
+          </div>
+
+          <div className="cal-panel-divider" />
+
+          <div className="cal-chat-half">
+            <ChatPanel />
+          </div>
         </div>
       </div>
     </>
@@ -132,7 +221,9 @@ const MonthGrid: React.FC<{
   todayStr: string;
   colorVariants: Map<string, number>;
   moreLabel: (n: number) => string;
-}> = ({ anchor, events, todayStr, colorVariants, moreLabel }) => {
+  selectedId: string | null;
+  onSelect: (id: string) => void;
+}> = ({ anchor, events, todayStr, colorVariants, moreLabel, selectedId, onSelect }) => {
   const t = useT();
   const year = anchor.getFullYear();
   const month = anchor.getMonth();
@@ -173,9 +264,14 @@ const MonthGrid: React.FC<{
               {visible.map((ev) => {
                 const style = getCategoryStyle(ev.category, colorVariants.get(ev.id) ?? 0);
                 return (
-                  <div key={ev.id} className="month-ribbon" style={{ background: style.bg, borderLeftColor: style.rail, color: style.text }}>
+                  <button
+                    key={ev.id}
+                    className={`month-ribbon${selectedId === ev.id ? ' selected' : ''}`}
+                    style={{ background: style.bg, borderLeftColor: style.rail, color: style.text }}
+                    onClick={() => onSelect(ev.id)}
+                  >
                     {ev.title}
-                  </div>
+                  </button>
                 );
               })}
               {overflow > 0 && <div className="month-overflow">{moreLabel(overflow)}</div>}
@@ -194,7 +290,9 @@ const WeekGrid: React.FC<{
   todayStr: string;
   colorVariants: Map<string, number>;
   weekdayLabel: (i: number) => string;
-}> = ({ anchor, events, todayStr, colorVariants, weekdayLabel }) => {
+  selectedId: string | null;
+  onSelect: (id: string) => void;
+}> = ({ anchor, events, todayStr, colorVariants, weekdayLabel, selectedId, onSelect }) => {
   const weekStart = startOfWeek(anchor);
   const days = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
   const hours = Array.from({ length: HOUR_END - HOUR_START }, (_, i) => HOUR_START + i);
@@ -238,14 +336,15 @@ const WeekGrid: React.FC<{
                     const height = Math.max(28, (endHour - startHour) * HOUR_HEIGHT);
                     const style = getCategoryStyle(ev.category, colorVariants.get(ev.id) ?? 0);
                     return (
-                      <div
+                      <button
                         key={ev.id}
-                        className="week-event"
+                        className={`week-event${selectedId === ev.id ? ' selected' : ''}`}
                         style={{ top, height, background: style.bg, borderLeftColor: style.rail, color: style.text }}
+                        onClick={() => onSelect(ev.id)}
                       >
                         <div className="week-event-title">{ev.title}</div>
                         {ev.time && <div className="week-event-time">{ev.time}</div>}
-                      </div>
+                      </button>
                     );
                   })}
                 </div>

@@ -19,6 +19,8 @@
   --accent-tint: rgba(193, 96, 42, 0.12);
   --green: #16a34a;
   --green-tint: rgba(22, 163, 74, 0.125);
+  --red: #dc2626;
+  --red-tint: rgba(220, 38, 38, 0.1);
   --nav-selected: rgba(0, 0, 0, 0.075);
   --hover-row: rgba(0, 0, 0, 0.045);
   --voice-bg: #131211;

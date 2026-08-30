@@ -84,7 +84,7 @@ export const NotesView: React.FC = () => {
                 autoFocus={selected.content === ''}
               />
               <button
-                className="pill pill-ghost"
+                className="pill pill-danger"
                 onClick={() => {
                   if (window.confirm(t('notes.deleteConfirm'))) {
                     removeNote(selected.id);
