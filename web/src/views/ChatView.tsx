@@ -2,9 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useT } from '../i18n';
 import { useAppStore } from '../services/store';
 import { sendChatMessage } from '../services/ai';
-import { Message, ToolCall, Task } from '../types';
+import { Message, ToolCall } from '../types';
 import { SearchIcon, MicIcon, SendIcon } from '../components/Icons';
-import { Checkbox } from '../components/Atoms';
 
 const TOOL_LABEL_KEY: Record<ToolCall['name'], string> = {
   create_task: 'chat.taskAdded',
@@ -59,7 +58,6 @@ export const ChatView: React.FC = () => {
   const messages = useAppStore((s) => s.messages);
   const tasks = useAppStore((s) => s.tasks);
   const events = useAppStore((s) => s.events);
-  const updateTask = useAppStore((s) => s.updateTask);
 
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
@@ -125,19 +123,17 @@ export const ChatView: React.FC = () => {
     recognition.start();
   };
 
-  const handleOpenResource = (kind: 'task' | 'event' | 'note') => {
-    // No routing in v1 — jump the whole app to the relevant view; the resource itself
-    // will be visible in that view's list.
+  const handleOpenResource = (kind: 'task' | 'event' | 'note', id?: string) => {
+    // No routing in v1 — jump the whole app to the relevant view; if a specific
+    // resource id is known, that view also selects it (see e.g. TasksView's
+    // grimo:selectTask listener), not just the view's list in general.
     window.dispatchEvent(new CustomEvent('grimo:navigate', { detail: kind === 'task' ? 'tasks' : kind === 'event' ? 'cal' : 'notes' }));
+    if (kind === 'task' && id) window.dispatchEvent(new CustomEvent('grimo:selectTask', { detail: id }));
   };
 
   const todayStr = new Date().toISOString().slice(0, 10);
   const todaysEvents = events.filter((e) => e.date === todayStr).slice(0, 4);
   const openTasks = tasks.filter((t) => t.status !== 'done').slice(0, 6);
-
-  const toggleTaskDone = (task: Task) => {
-    updateTask(task.id, { status: task.status === 'done' ? 'todo' : 'done' });
-  };
 
   return (
     <>
@@ -258,10 +254,9 @@ export const ChatView: React.FC = () => {
             <div className="context-empty">{t('tasks.noTasks')}</div>
           ) : (
             openTasks.map((task) => (
-              <div key={task.id} className="context-task-row">
-                <Checkbox checked={task.status === 'done'} onChange={() => toggleTaskDone(task)} ariaLabel={task.title} />
+              <button key={task.id} className="context-task-row" onClick={() => handleOpenResource('task', task.id)}>
                 <span>{task.title}</span>
-              </div>
+              </button>
             ))
           )}
         </div>

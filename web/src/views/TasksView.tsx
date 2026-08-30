@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useT } from '../i18n';
 import { useAppStore } from '../services/store';
 import { Task } from '../types';
@@ -15,6 +15,13 @@ export const TasksView: React.FC = () => {
   const addTask = useAppStore((s) => s.addTask);
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
+
+  // Chat's "to do" list (and action cards) jump here with a specific task in mind.
+  useEffect(() => {
+    const handler = (e: Event) => setSelectedId((e as CustomEvent<string>).detail);
+    window.addEventListener('grimo:selectTask', handler);
+    return () => window.removeEventListener('grimo:selectTask', handler);
+  }, []);
 
   // Done tasks are hidden entirely — marking a task done behaves like deleting it
   // from this view, not moving it to a separate completed list.

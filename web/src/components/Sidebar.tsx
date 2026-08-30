@@ -39,9 +39,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ view, onNavigate, onOpenVoice 
   return (
     <aside className="sidebar">
       <div className="brand-row">
-        <span className="brand-mark">
-          <PlusIcon size={14} color="#fff" strokeWidth={2.4} />
-        </span>
+        <img className="brand-mark" src="/app-icon-6a-60.png" alt="Grimo AI" width={26} height={26} />
         <span className="brand-word">{t('nav.brand')}</span>
       </div>
 
