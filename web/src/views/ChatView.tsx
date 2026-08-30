@@ -218,9 +218,6 @@ export const ChatView: React.FC = () => {
               )}
 
               <div className="composer-controls">
-                <span className="pill pill-ghost">{t('chat.attach')}</span>
-                <span className="pill pill-ghost">{t('chat.task')}</span>
-                <span className="pill pill-ghost">{t('chat.note')}</span>
                 <div className="composer-actions">
                   <button type="button" className={`circle-btn${dictating ? ' active' : ''}`} onClick={toggleDictation} aria-label={t('chat.listening')}>
                     <MicIcon size={17} color={dictating ? '#fff' : '#1C1C1E'} strokeWidth={1.8} />
