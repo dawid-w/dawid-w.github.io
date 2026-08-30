@@ -2,7 +2,6 @@ import React, { useMemo, useState } from 'react';
 import { useT } from '../i18n';
 import { useAppStore } from '../services/store';
 import { Task } from '../types';
-import { Toggle } from '../components/Atoms';
 import { PlusIcon } from '../components/Icons';
 
 type Priority = Task['priority'];
@@ -21,19 +20,32 @@ export const TasksView: React.FC = () => {
   // from this view, not moving it to a separate completed list.
   const filtered = useMemo(() => tasks.filter((task) => task.status !== 'done'), [tasks]);
 
-  // Real data doesn't have a due date on tasks — grouping by priority (which is real)
-  // instead of the design doc's fictional Today/Tomorrow/This week date buckets.
+  // Grouped by category, matching mobile — priority stays a per-task field, not a
+  // grouping axis.
   const groups = useMemo(() => {
-    return PRIORITY_ORDER.map((priority) => ({
-      priority,
-      items: filtered.filter((task) => task.priority === priority),
-    })).filter((g) => g.items.length > 0);
+    const byCategory = new Map<string, Task[]>();
+    for (const task of filtered) {
+      const key = task.category.trim();
+      const arr = byCategory.get(key);
+      if (arr) arr.push(task);
+      else byCategory.set(key, [task]);
+    }
+    const priorityRank: Record<Priority, number> = { high: 0, medium: 1, low: 2 };
+    const categories = Array.from(byCategory.keys()).sort((a, b) => {
+      if (!a) return 1;
+      if (!b) return -1;
+      return a.localeCompare(b);
+    });
+    return categories.map((category) => ({
+      category,
+      items: byCategory.get(category)!.sort((a, b) => priorityRank[a.priority] - priorityRank[b.priority]),
+    }));
   }, [filtered]);
 
   const selected = filtered.find((task) => task.id === selectedId) || null;
 
-  const toggleDone = (task: Task) => {
-    updateTask(task.id, { status: task.status === 'done' ? 'todo' : 'done' });
+  const markDone = (task: Task) => {
+    updateTask(task.id, { status: 'done' });
   };
 
   const handleNewTask = () => {
@@ -63,9 +75,9 @@ export const TasksView: React.FC = () => {
             </div>
           ) : (
             groups.map((group) => (
-              <div key={group.priority} className="task-group">
+              <div key={group.category || '__uncategorized'} className="task-group">
                 <div className="task-group-head">
-                  <span>{priorityLabel(group.priority)}</span>
+                  <span>{(group.category || t('tasks.uncategorized')).toUpperCase()}</span>
                   <span className="task-group-count">{group.items.length}</span>
                 </div>
                 <div className="task-rows">
@@ -100,11 +112,6 @@ export const TasksView: React.FC = () => {
               />
 
               <div className="detail-row">
-                <span className="detail-label">{t('tasks.markDone')}</span>
-                <Toggle on={selected.status === 'done'} onChange={() => toggleDone(selected)} ariaLabel={t('tasks.markDone')} />
-              </div>
-
-              <div className="detail-row">
                 <span className="detail-label">{t('tasks.priority')}</span>
                 <div className="segmented">
                   {PRIORITY_ORDER.map((p) => (
@@ -125,18 +132,22 @@ export const TasksView: React.FC = () => {
                 />
               </div>
 
-              <button
-                className="pill pill-danger"
-                style={{ marginTop: 20, alignSelf: 'flex-start' }}
-                onClick={() => {
-                  if (window.confirm(t('tasks.deleteConfirm'))) {
-                    removeTask(selected.id);
-                    setSelectedId(null);
-                  }
-                }}
-              >
-                {t('common.delete')}
-              </button>
+              <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
+                <button className="pill pill-ink" onClick={() => markDone(selected)}>
+                  {t('tasks.markDone')}
+                </button>
+                <button
+                  className="pill pill-danger"
+                  onClick={() => {
+                    if (window.confirm(t('tasks.deleteConfirm'))) {
+                      removeTask(selected.id);
+                      setSelectedId(null);
+                    }
+                  }}
+                >
+                  {t('common.delete')}
+                </button>
+              </div>
             </>
           )}
         </div>

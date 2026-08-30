@@ -57,6 +57,7 @@ export const de = {
     deleteConfirm: 'Diese Aufgabe löschen?',
     titlePlaceholder: 'Aufgabenname',
     categoryPlaceholder: 'Kategorie',
+    uncategorized: 'Ohne Kategorie',
   },
   calendar: {
     title: 'Kalender',

@@ -57,6 +57,7 @@ export const pl = {
     deleteConfirm: 'Usunąć to zadanie?',
     titlePlaceholder: 'Nazwa zadania',
     categoryPlaceholder: 'Kategoria',
+    uncategorized: 'Bez kategorii',
   },
   calendar: {
     title: 'Kalendarz',

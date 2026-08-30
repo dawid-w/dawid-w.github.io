@@ -57,6 +57,7 @@ export const en = {
     deleteConfirm: 'Delete this task?',
     titlePlaceholder: 'Task name',
     categoryPlaceholder: 'Category',
+    uncategorized: 'Uncategorized',
   },
   calendar: {
     title: 'Calendar',
