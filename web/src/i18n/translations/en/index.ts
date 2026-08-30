@@ -1,7 +1,8 @@
 export const en = {
   nav: {
     brand: 'Grimo',
-    newChat: 'New conversation',
+    clearChat: 'Clear chat',
+    clearChatConfirm: 'Clear the whole chat history? This cannot be undone.',
     chat: 'Chat',
     tasks: 'Tasks',
     cal: 'Calendar',
@@ -12,7 +13,6 @@ export const en = {
   },
   chat: {
     title: 'Chat',
-    calendarConnected: 'Calendar connected',
     placeholder: 'Type what you need, in plain language…',
     listening: 'Listening — dictation',
     sendHint: 'Press Enter to send',
@@ -114,11 +114,10 @@ export const en = {
   },
   voice: {
     label: 'Voice mode',
-    end: 'End conversation',
+    end: 'End',
     listening: 'Listening…',
     thinking: 'Thinking…',
     speaking: 'Replying…',
-    mute: 'Mute and end',
     hint: '⌘K to open anytime',
   },
   auth: {

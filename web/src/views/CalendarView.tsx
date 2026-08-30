@@ -8,7 +8,6 @@ import { ChatPanel } from '../components/ChatPanel';
 import { ChevronLeftIcon, ChevronRightIcon } from '../components/Icons';
 
 type CalMode = 'week' | 'month';
-const ALL_CATEGORIES: EventCategory[] = ['travel', 'training', 'meeting', 'vacation', 'internal'];
 const CATEGORY_LABEL_KEY: Record<EventCategory, string> = {
   travel: 'calendar.categoryTravel',
   training: 'calendar.categoryTraining',
@@ -175,17 +174,12 @@ export const CalendarView: React.FC = () => {
 
                 <div className="detail-row" style={{ border: 'none' }}>
                   <span className="detail-label">{t('calendar.category')}</span>
-                  <div className="segmented" style={{ flexWrap: 'wrap', justifyContent: 'flex-end' }}>
-                    {ALL_CATEGORIES.map((cat) => (
-                      <button
-                        key={cat}
-                        className={selected.category === cat ? 'active' : ''}
-                        onClick={() => updateEvent(selected.id, { category: cat })}
-                      >
-                        {t(CATEGORY_LABEL_KEY[cat])}
-                      </button>
-                    ))}
-                  </div>
+                  <span
+                    className="tag-chip"
+                    style={{ background: getCategoryStyle(selected.category, 0).bg, color: getCategoryStyle(selected.category, 0).text }}
+                  >
+                    {t(CATEGORY_LABEL_KEY[selected.category || 'internal']).toUpperCase()}
+                  </span>
                 </div>
 
                 <button

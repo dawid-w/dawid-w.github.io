@@ -2,7 +2,7 @@ import React from 'react';
 import { AppView } from '../types';
 import { useT } from '../i18n';
 import { useAppStore } from '../services/store';
-import { PlusIcon, ChatIcon, TasksIcon, CalendarIcon, NotesIcon, VoiceIcon, GearIcon } from './Icons';
+import { ChatIcon, TasksIcon, CalendarIcon, NotesIcon, VoiceIcon, GearIcon, TrashIcon } from './Icons';
 import { Avatar } from './Atoms';
 
 interface SidebarProps {
@@ -31,9 +31,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ view, onNavigate, onOpenVoice 
     .join('')
     .toUpperCase();
 
-  const handleNewChat = () => {
-    clearMessages();
-    onNavigate('chat');
+  const handleClearChat = () => {
+    if (window.confirm(t('nav.clearChatConfirm'))) {
+      clearMessages();
+      onNavigate('chat');
+    }
   };
 
   return (
@@ -41,13 +43,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ view, onNavigate, onOpenVoice 
       <div className="brand-row">
         <img className="brand-mark" src="/app-icon-6a-60.png" alt="Grimo AI" width={26} height={26} />
         <span className="brand-word">{t('nav.brand')}</span>
-      </div>
-
-      <div className="new-chat-wrap">
-        <button className="new-chat-btn" onClick={handleNewChat}>
-          <PlusIcon size={15} color="#fff" strokeWidth={2.2} />
-          {t('nav.newChat')}
-        </button>
       </div>
 
       <nav className="nav-group">
@@ -76,6 +71,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ view, onNavigate, onOpenVoice 
       </nav>
 
       <div style={{ flex: 1 }} />
+
+      <div className="clear-chat-wrap">
+        <button className="clear-chat-btn" onClick={handleClearChat}>
+          <TrashIcon size={14} color="currentColor" strokeWidth={1.8} />
+          {t('nav.clearChat')}
+        </button>
+      </div>
 
       <button className={`account-row${view === 'settings' ? ' active' : ''}`} onClick={() => onNavigate('settings')}>
         <Avatar initials={initials || 'U'} />

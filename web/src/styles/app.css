@@ -50,13 +50,13 @@
   padding: 3px 7px;
   border-radius: 5px;
 }
-.new-chat-wrap {
-  padding: 4px 14px 14px;
+.clear-chat-wrap {
+  padding: 0 14px 10px;
 }
-.new-chat-btn {
+.clear-chat-btn {
   width: 100%;
-  background: var(--ink);
-  color: #fff;
+  background: var(--red-tint);
+  color: var(--red);
   border: none;
   border-radius: 11px;
   padding: 11px 12px;
@@ -68,8 +68,9 @@
   font-weight: 600;
   cursor: pointer;
 }
-.new-chat-btn:hover {
-  background: #000;
+.clear-chat-btn:hover {
+  background: var(--red);
+  color: #fff;
 }
 .nav-group {
   padding: 0 10px;
@@ -1225,9 +1226,17 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 28px 40px;
-  gap: 16px;
+  padding: 16px 40px 28px;
+  gap: 8px;
   max-width: 760px;
+}
+.note-open-header {
+  display: flex;
+  justify-content: flex-end;
+  flex: none;
+}
+.note-delete-btn:hover {
+  background: var(--red-tint);
 }
 .note-editor {
   flex: 1;
@@ -1243,8 +1252,14 @@
 .note-editor::placeholder {
   color: var(--muted);
 }
-.note-open-inner .pill-ghost {
-  align-self: flex-start;
+.notes-chat-panel {
+  width: 320px;
+  flex: none;
+  border-left: 1px solid var(--border);
+  background: var(--panel-alt);
+  display: flex;
+  flex-direction: column;
+  padding: 16px 16px 14px;
 }
 
 /* ---------- Settings view ---------- */
@@ -1436,15 +1451,6 @@
   display: flex;
   align-items: center;
   gap: 14px;
-}
-.voice-mic-indicator {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 .voice-mute-btn {
   height: 40px;

@@ -3,7 +3,7 @@ import { useT } from '../i18n';
 import { useAppStore } from '../services/store';
 import { sendChatMessage } from '../services/ai';
 import { Message, ToolCall } from '../types';
-import { SearchIcon, MicIcon, SendIcon } from '../components/Icons';
+import { MicIcon, SendIcon } from '../components/Icons';
 
 const TOOL_LABEL_KEY: Record<ToolCall['name'], string> = {
   create_task: 'chat.taskAdded',
@@ -139,15 +139,6 @@ export const ChatView: React.FC = () => {
     <>
       <div className="topbar topbar-chat">
         <span className="view-title">{t('chat.title')}</span>
-        <div className="topbar-right">
-          <span className="pill">
-            <span className="dot" />
-            {t('chat.calendarConnected')}
-          </span>
-          <button className="icon-btn" aria-label={t('chat.title')}>
-            <SearchIcon size={15} color="#1C1C1E" strokeWidth={1.7} />
-          </button>
-        </div>
       </div>
 
       <div className="main-body chat-body">

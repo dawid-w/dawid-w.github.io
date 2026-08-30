@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useT } from '../i18n';
 import { useAppStore } from '../services/store';
 import { Task } from '../types';
@@ -6,6 +6,12 @@ import { PlusIcon } from '../components/Icons';
 
 type Priority = Task['priority'];
 const PRIORITY_ORDER: Priority[] = ['high', 'medium', 'low'];
+
+interface TaskDraft {
+  title: string;
+  category: string;
+  priority: Priority;
+}
 
 export const TasksView: React.FC = () => {
   const t = useT();
@@ -15,13 +21,28 @@ export const TasksView: React.FC = () => {
   const addTask = useAppStore((s) => s.addTask);
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  // A new task stays a local draft — never added to the real list — until Save.
+  const [draft, setDraft] = useState<TaskDraft | null>(null);
+  const rowRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
+
+  const selectTask = (id: string) => {
+    setDraft(null);
+    setSelectedId(id);
+  };
 
   // Chat's "to do" list (and action cards) jump here with a specific task in mind.
   useEffect(() => {
-    const handler = (e: Event) => setSelectedId((e as CustomEvent<string>).detail);
+    const handler = (e: Event) => selectTask((e as CustomEvent<string>).detail);
     window.addEventListener('grimo:selectTask', handler);
     return () => window.removeEventListener('grimo:selectTask', handler);
   }, []);
+
+  // Keep the selected row in view — including right after saving a new task, so the
+  // user lands on where it ended up in the (category-grouped) list.
+  useEffect(() => {
+    if (!selectedId) return;
+    rowRefs.current.get(selectedId)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, [selectedId]);
 
   // Done tasks are hidden entirely — marking a task done behaves like deleting it
   // from this view, not moving it to a separate completed list.
@@ -56,7 +77,14 @@ export const TasksView: React.FC = () => {
   };
 
   const handleNewTask = () => {
-    const newTask = addTask({ title: t('tasks.newTask'), category: '', status: 'todo', priority: 'medium' });
+    setSelectedId(null);
+    setDraft({ title: '', category: '', priority: 'medium' });
+  };
+
+  const handleSaveDraft = () => {
+    if (!draft) return;
+    const newTask = addTask({ title: draft.title.trim(), category: draft.category.trim(), status: 'todo', priority: draft.priority });
+    setDraft(null);
     setSelectedId(newTask.id);
   };
 
@@ -89,7 +117,15 @@ export const TasksView: React.FC = () => {
                 </div>
                 <div className="task-rows">
                   {group.items.map((task) => (
-                    <button key={task.id} className={`task-row${selectedId === task.id ? ' selected' : ''}`} onClick={() => setSelectedId(task.id)}>
+                    <button
+                      key={task.id}
+                      ref={(el) => {
+                        if (el) rowRefs.current.set(task.id, el);
+                        else rowRefs.current.delete(task.id);
+                      }}
+                      className={`task-row${selectedId === task.id ? ' selected' : ''}`}
+                      onClick={() => selectTask(task.id)}
+                    >
                       <div className="task-row-body">
                         <div className="task-row-title">{task.title || t('tasks.titlePlaceholder')}</div>
                         {task.category && <div className="task-row-meta">{task.category}</div>}
@@ -104,7 +140,48 @@ export const TasksView: React.FC = () => {
         </div>
 
         <div className="detail-panel">
-          {!selected ? (
+          {draft ? (
+            <>
+              <div className="context-label">{t('tasks.details')}</div>
+              <input
+                className="detail-title-input"
+                value={draft.title}
+                onChange={(e) => setDraft({ ...draft, title: e.target.value })}
+                placeholder={t('tasks.titlePlaceholder')}
+                autoFocus
+              />
+
+              <div className="detail-row">
+                <span className="detail-label">{t('tasks.priority')}</span>
+                <div className="segmented">
+                  {PRIORITY_ORDER.map((p) => (
+                    <button key={p} className={draft.priority === p ? 'active' : ''} onClick={() => setDraft({ ...draft, priority: p })}>
+                      {priorityLabel(p)}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="detail-row">
+                <span className="detail-label">{t('tasks.categoryPlaceholder')}</span>
+                <input
+                  className="detail-inline-input"
+                  value={draft.category}
+                  onChange={(e) => setDraft({ ...draft, category: e.target.value })}
+                  placeholder={t('tasks.categoryPlaceholder')}
+                />
+              </div>
+
+              <div style={{ display: 'flex', gap: 8, marginTop: 20 }}>
+                <button className="pill pill-ink" onClick={handleSaveDraft}>
+                  {t('common.save')}
+                </button>
+                <button className="pill pill-ghost" onClick={() => setDraft(null)}>
+                  {t('common.cancel')}
+                </button>
+              </div>
+            </>
+          ) : !selected ? (
             <div className="empty-state">
               <div className="empty-state-body">{t('tasks.selectTask')}</div>
             </div>

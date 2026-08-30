@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useT } from '../i18n';
 import { useAppStore } from '../services/store';
-import { SearchIcon, PlusIcon } from '../components/Icons';
+import { SearchIcon, PlusIcon, TrashIcon } from '../components/Icons';
+import { ChatPanel } from '../components/ChatPanel';
 
 const EMPTY_NOTE_REMOVE_DELAY = 220;
 
@@ -108,6 +109,20 @@ export const NotesView: React.FC = () => {
             </div>
           ) : (
             <div className="note-open-inner">
+              <div className="note-open-header">
+                <button
+                  className="icon-btn note-delete-btn"
+                  aria-label={t('common.delete')}
+                  onClick={() => {
+                    if (window.confirm(t('notes.deleteConfirm'))) {
+                      removeNote(selected.id);
+                      setSelectedId(null);
+                    }
+                  }}
+                >
+                  <TrashIcon size={15} color="var(--red)" strokeWidth={1.8} />
+                </button>
+              </div>
               <textarea
                 className="note-editor"
                 value={selected.content}
@@ -115,19 +130,12 @@ export const NotesView: React.FC = () => {
                 placeholder={t('notes.placeholder')}
                 autoFocus={selected.content === ''}
               />
-              <button
-                className="pill pill-danger"
-                onClick={() => {
-                  if (window.confirm(t('notes.deleteConfirm'))) {
-                    removeNote(selected.id);
-                    setSelectedId(null);
-                  }
-                }}
-              >
-                {t('common.delete')}
-              </button>
             </div>
           )}
+        </div>
+
+        <div className="notes-chat-panel">
+          <ChatPanel />
         </div>
       </div>
     </>

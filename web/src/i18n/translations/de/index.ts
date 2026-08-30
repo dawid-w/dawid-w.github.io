@@ -1,7 +1,8 @@
 export const de = {
   nav: {
     brand: 'Grimo',
-    newChat: 'Neue Unterhaltung',
+    clearChat: 'Chat löschen',
+    clearChatConfirm: 'Den gesamten Chatverlauf löschen? Dies kann nicht rückgängig gemacht werden.',
     chat: 'Chat',
     tasks: 'Aufgaben',
     cal: 'Kalender',
@@ -12,7 +13,6 @@ export const de = {
   },
   chat: {
     title: 'Chat',
-    calendarConnected: 'Kalender verbunden',
     placeholder: 'Schreib einfach, was du brauchst…',
     listening: 'Ich höre zu — Diktat',
     sendHint: 'Enter zum Senden',
@@ -114,11 +114,10 @@ export const de = {
   },
   voice: {
     label: 'Sprachmodus',
-    end: 'Gespräch beenden',
+    end: 'Beenden',
     listening: 'Ich höre zu…',
     thinking: 'Ich denke nach…',
     speaking: 'Ich antworte…',
-    mute: 'Stumm & beenden',
     hint: '⌘K zum jederzeitigen Öffnen',
   },
   auth: {

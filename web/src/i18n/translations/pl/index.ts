@@ -1,7 +1,8 @@
 export const pl = {
   nav: {
     brand: 'Grimo',
-    newChat: 'Nowa rozmowa',
+    clearChat: 'Wyczyść czat',
+    clearChatConfirm: 'Wyczyścić całą historię czatu? Tej operacji nie można cofnąć.',
     chat: 'Czat',
     tasks: 'Zadania',
     cal: 'Kalendarz',
@@ -12,7 +13,6 @@ export const pl = {
   },
   chat: {
     title: 'Czat',
-    calendarConnected: 'Kalendarz połączony',
     placeholder: 'Napisz zwykłym zdaniem, czego potrzebujesz…',
     listening: 'Słucham — dyktowanie',
     sendHint: 'Naciśnij Enter, aby wysłać',
@@ -114,11 +114,10 @@ export const pl = {
   },
   voice: {
     label: 'Tryb głosowy',
-    end: 'Zakończ rozmowę',
+    end: 'Zakończ',
     listening: 'Słucham…',
     thinking: 'Myślę…',
     speaking: 'Odpowiadam…',
-    mute: 'Wycisz i zakończ',
     hint: '⌘K, aby otworzyć w każdej chwili',
   },
   auth: {

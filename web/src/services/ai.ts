@@ -13,15 +13,22 @@ export interface AIResponse {
 
 // Calls the same ai-chat Edge Function the mobile app uses (supabase/functions/ai-chat) —
 // identical payload shape to src/services/ai/geminiService.ts, since it's shared backend.
-export async function sendMessage(userMessage: string, voiceMode = false): Promise<AIResponse> {
+// historyOverride lets a caller (e.g. an ephemeral side-panel chat) supply its own
+// conversation instead of the shared thread in the store.
+export async function sendMessage(
+  userMessage: string,
+  voiceMode = false,
+  historyOverride?: { role: string; content: string }[]
+): Promise<AIResponse> {
   const language = getLanguage();
   const { messages, tasks, events, notes } = useAppStore.getState();
+  const chatHistory = historyOverride ?? messages.filter((m) => m.role !== 'system').map((m) => ({ role: m.role, content: m.content }));
 
   try {
     const { data, error } = await supabase.functions.invoke('ai-chat', {
       body: {
         userMessage,
-        chatHistory: messages.filter((m) => m.role !== 'system').map((m) => ({ role: m.role, content: m.content })),
+        chatHistory,
         tasks,
         events,
         notes,
@@ -169,6 +176,20 @@ export function sendChatMessage(userText: string, addUserMessage = true) {
       content: response.textContent,
       toolCalls: response.toolCalls,
     });
+    return response;
+  });
+}
+
+// For side-panel chats (Calendar, Notes) that intentionally don't share the main Chat
+// tab's persisted thread — history lives in the caller's own component state instead of
+// the store, so it naturally resets when that panel unmounts. Tool calls still execute
+// against the real tasks/events/notes stores; only the conversation itself is ephemeral.
+export function sendEphemeralMessage(userText: string, history: Message[]): Promise<AIResponse> {
+  const chatHistory = history.filter((m) => m.role !== 'system').map((m) => ({ role: m.role, content: m.content }));
+  return sendMessage(userText, false, chatHistory).then((response) => {
+    if (response.toolCalls) {
+      for (const tc of response.toolCalls) executeToolCall(tc);
+    }
     return response;
   });
 }

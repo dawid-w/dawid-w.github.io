@@ -1,15 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useT } from '../i18n';
-import { useAppStore } from '../services/store';
-import { sendChatMessage } from '../services/ai';
+import { sendEphemeralMessage } from '../services/ai';
 import { Message } from '../types';
 import { SendIcon } from './Icons';
 
-// Compact chat, embeddable in a side panel — shares the same message thread as the
-// main Chat tab (same store), so a message sent here shows up there too.
+const genId = () => `ephemeral-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+
+// Compact chat, embeddable in a side panel (Calendar, Notes) — intentionally does NOT
+// share the main Chat tab's persisted thread. History lives in local state only, so it
+// naturally resets whenever this panel unmounts (switching views, etc). Tool calls still
+// act on the real tasks/events/notes stores via sendEphemeralMessage.
 export const ChatPanel: React.FC = () => {
   const t = useT();
-  const messages = useAppStore((s) => s.messages);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
   const threadRef = useRef<HTMLDivElement>(null);
@@ -23,9 +26,13 @@ export const ChatPanel: React.FC = () => {
     const trimmed = input.trim();
     if (!trimmed || sending) return;
     setInput('');
+    const userMessage: Message = { id: genId(), role: 'user', content: trimmed };
+    const history = [...messages, userMessage];
+    setMessages(history);
     setSending(true);
     try {
-      await sendChatMessage(trimmed);
+      const response = await sendEphemeralMessage(trimmed, history);
+      setMessages((cur) => [...cur, { id: genId(), role: 'assistant', content: response.textContent, toolCalls: response.toolCalls }]);
     } finally {
       setSending(false);
     }
@@ -35,20 +42,18 @@ export const ChatPanel: React.FC = () => {
     <div className="mini-chat">
       <div className="context-label">{t('chat.title')}</div>
       <div className="mini-chat-thread" ref={threadRef}>
-        {messages.filter((m) => m.role !== 'system').length === 0 && !sending ? (
+        {messages.length === 0 && !sending ? (
           <div className="context-empty">{t('chat.emptyBody')}</div>
         ) : (
-          messages
-            .filter((m) => m.role !== 'system')
-            .map((m: Message) => (
-              <div key={m.id} className={m.role === 'user' ? 'bubble-row user' : 'bubble-row assistant'}>
-                {m.role === 'user' ? (
-                  <div className="bubble-user mini-bubble">{m.content}</div>
-                ) : (
-                  <div className="assistant-block mini-bubble">{m.content && <p className="assistant-text">{m.content}</p>}</div>
-                )}
-              </div>
-            ))
+          messages.map((m: Message) => (
+            <div key={m.id} className={m.role === 'user' ? 'bubble-row user' : 'bubble-row assistant'}>
+              {m.role === 'user' ? (
+                <div className="bubble-user mini-bubble">{m.content}</div>
+              ) : (
+                <div className="assistant-block mini-bubble">{m.content && <p className="assistant-text">{m.content}</p>}</div>
+              )}
+            </div>
+          ))
         )}
         {sending && (
           <div className="bubble-row assistant">

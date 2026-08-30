@@ -25,7 +25,7 @@
   --hover-row: rgba(0, 0, 0, 0.045);
   --voice-bg: #131211;
 
-  --orb-gradient: radial-gradient(circle at 34% 30%, #e08b4e, #b4531f);
+  --orb-gradient: radial-gradient(circle at 34% 30%, #f6f5f3, #d3d1cc);
 
   /* Type */
   --font-sans: -apple-system, system-ui, sans-serif;

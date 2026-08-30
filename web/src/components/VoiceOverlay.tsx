@@ -4,7 +4,7 @@ import { getLanguage } from '../i18n/languageStore';
 import { useAppStore } from '../services/store';
 import { sendMessage, executeToolCall } from '../services/ai';
 import { supabase } from '../services/supabaseClient';
-import { XIcon, MicIcon, MicMutedIcon } from './Icons';
+import { XIcon } from './Icons';
 
 type VoiceState = 'LISTENING' | 'THINKING' | 'SPEAKING';
 
@@ -179,11 +179,8 @@ export const VoiceOverlay: React.FC<VoiceOverlayProps> = ({ onClose }) => {
       </div>
 
       <div className="voice-controls">
-        <div className="voice-mic-indicator">
-          {speechSupported ? <MicIcon size={16} color="#fff" strokeWidth={1.8} /> : <MicMutedIcon size={16} color="#fff" strokeWidth={1.8} />}
-        </div>
         <button className="voice-mute-btn" onClick={handleClose}>
-          {t('voice.mute')}
+          {t('voice.end')}
         </button>
         <span className="voice-hint">{t('voice.hint')}</span>
       </div>
