@@ -123,13 +123,15 @@ export const NotesView: React.FC = () => {
                   <TrashIcon size={15} color="var(--red)" strokeWidth={1.8} />
                 </button>
               </div>
-              <textarea
-                className="note-editor"
-                value={selected.content}
-                onChange={(e) => updateNote(selected.id, { content: e.target.value })}
-                placeholder={t('notes.placeholder')}
-                autoFocus={selected.content === ''}
-              />
+              <div className="note-editor-wrap">
+                <textarea
+                  className="note-editor"
+                  value={selected.content}
+                  onChange={(e) => updateNote(selected.id, { content: e.target.value })}
+                  placeholder={t('notes.placeholder')}
+                  autoFocus={selected.content === ''}
+                />
+              </div>
             </div>
           )}
         </div>

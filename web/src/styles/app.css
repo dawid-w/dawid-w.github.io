@@ -1226,20 +1226,27 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 16px 40px 28px;
-  gap: 8px;
-  max-width: 760px;
+  min-width: 0;
 }
 .note-open-header {
   display: flex;
   justify-content: flex-end;
   flex: none;
+  padding: 14px 24px 0;
 }
 .note-delete-btn:hover {
   background: var(--red-tint);
 }
+.note-editor-wrap {
+  flex: 1;
+  display: flex;
+  padding: 8px 40px 28px;
+  min-height: 0;
+}
 .note-editor {
   flex: 1;
+  width: 100%;
+  max-width: 760px;
   border: none;
   outline: none;
   resize: none;
