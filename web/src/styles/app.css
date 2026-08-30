@@ -840,22 +840,25 @@
   flex: 1;
   min-width: 0;
   overflow-y: auto;
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  grid-auto-rows: minmax(96px, 1fr);
+  display: flex;
+  flex-direction: column;
   border-top: 1px solid var(--border);
   border-left: 1px solid var(--border);
 }
-.month-cell {
+.month-week-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  flex: 1 0 112px;
+  min-height: 112px;
+}
+.month-daycell {
   border-right: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   padding: 6px;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
   min-width: 0;
 }
-.month-cell.outside {
+.month-daycell.outside {
   background: oklch(98% 0.002 90);
   opacity: 0.55;
 }
@@ -874,38 +877,42 @@
   background: var(--ink);
   color: #fff;
 }
-.month-events {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
+.month-week-bars {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  pointer-events: none;
 }
-.month-ribbon {
+.month-bar {
+  position: absolute;
   display: block;
-  width: 100%;
   text-align: left;
   border: none;
   font-size: 11px;
   font-weight: 600;
   font-family: inherit;
-  padding: 2px 6px;
+  padding: 2px 8px;
   border-radius: 5px;
   border-left: 3px solid;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   cursor: pointer;
+  pointer-events: auto;
 }
-.month-ribbon.selected,
+.month-bar.selected,
 .week-event.selected {
   outline: 2px solid var(--ink);
   outline-offset: 1px;
 }
-.month-overflow {
+.month-bar-overflow {
+  position: absolute;
   font-size: 10px;
   font-weight: 600;
   color: var(--muted);
-  padding: 0 6px;
+  padding: 0 8px;
 }
 
 /* ---- Calendar: week ---- */

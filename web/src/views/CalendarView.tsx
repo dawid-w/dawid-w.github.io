@@ -209,6 +209,56 @@ export const CalendarView: React.FC = () => {
   );
 };
 
+const MONTH_MAX_LANES = 3;
+const MONTH_BAR_TOP = 32; // below the day-number badge
+const MONTH_BAR_HEIGHT = 17;
+const MONTH_BAR_GAP = 2;
+
+interface WeekBar {
+  event: CalendarEvent;
+  startCol: number; // 0-6, inclusive
+  endCol: number; // 0-6, inclusive
+  lane: number;
+}
+
+// Greedy interval-graph coloring: events spanning multiple days get one continuous bar
+// per week (clipped to that week), stacked into lanes so overlapping events don't
+// collide. Events beyond MONTH_MAX_LANES fall back to a per-day "+n more" count.
+function computeWeekBars(weekStart: Date, events: CalendarEvent[]): { bars: WeekBar[]; overflowByDay: number[] } {
+  const weekStartStr = toDateStr(weekStart);
+  const weekEndStr = toDateStr(addDays(weekStart, 6));
+
+  const spans = events
+    .map((event) => {
+      const end = event.endDate && event.endDate > event.date ? event.endDate : event.date;
+      if (end < weekStartStr || event.date > weekEndStr) return null;
+      const clippedStart = event.date < weekStartStr ? weekStartStr : event.date;
+      const clippedEnd = end > weekEndStr ? weekEndStr : end;
+      const startCol = Math.round((parseDateStr(clippedStart).getTime() - weekStart.getTime()) / 86400000);
+      const endCol = Math.round((parseDateStr(clippedEnd).getTime() - weekStart.getTime()) / 86400000);
+      return { event, startCol, endCol };
+    })
+    .filter((s): s is { event: CalendarEvent; startCol: number; endCol: number } => s !== null)
+    .sort((a, b) => a.startCol - b.startCol || b.endCol - b.startCol - (a.endCol - a.startCol) || (a.event.time || '').localeCompare(b.event.time || ''));
+
+  const laneEndCols: number[] = [];
+  const bars: WeekBar[] = [];
+  const overflowByDay = new Array(7).fill(0);
+
+  for (const span of spans) {
+    let lane = laneEndCols.findIndex((endCol) => endCol < span.startCol);
+    if (lane === -1) lane = laneEndCols.length;
+    if (lane >= MONTH_MAX_LANES) {
+      for (let d = span.startCol; d <= span.endCol; d++) overflowByDay[d]++;
+      continue;
+    }
+    laneEndCols[lane] = span.endCol;
+    bars.push({ ...span, lane });
+  }
+
+  return { bars, overflowByDay };
+}
+
 const MonthGrid: React.FC<{
   anchor: Date;
   events: CalendarEvent[];
@@ -223,57 +273,65 @@ const MonthGrid: React.FC<{
   const month = anchor.getMonth();
   const firstOfMonth = new Date(year, month, 1);
   const gridStart = startOfWeek(firstOfMonth);
-  const days = Array.from({ length: 42 }, (_, i) => addDays(gridStart, i));
-
-  const eventsByDate = useMemo(() => {
-    const map = new Map<string, CalendarEvent[]>();
-    for (const ev of events) {
-      const end = ev.endDate && ev.endDate > ev.date ? ev.endDate : ev.date;
-      // Expand multi-day events across each day they span.
-      const cursorDate = parseDateStr(ev.date);
-      const endDate = parseDateStr(end);
-      while (cursorDate <= endDate) {
-        const key = toDateStr(cursorDate);
-        const arr = map.get(key);
-        if (arr) arr.push(ev);
-        else map.set(key, [ev]);
-        cursorDate.setDate(cursorDate.getDate() + 1);
-      }
-    }
-    return map;
-  }, [events]);
+  const weeks = useMemo(() => Array.from({ length: 6 }, (_, w) => addDays(gridStart, w * 7)), [gridStart]);
 
   return (
     <div className="month-grid">
-      {days.map((day, i) => {
-        const key = toDateStr(day);
-        const inMonth = day.getMonth() === month;
-        const dayEvents = (eventsByDate.get(key) || []).slice().sort((a, b) => (a.time || '').localeCompare(b.time || ''));
-        const visible = dayEvents.slice(0, 3);
-        const overflow = dayEvents.length - visible.length;
+      {weeks.map((weekStart, w) => {
+        const { bars, overflowByDay } = computeWeekBars(weekStart, events);
         return (
-          <div key={i} className={`month-cell${inMonth ? '' : ' outside'}`}>
-            <div className={`month-daynum${key === todayStr ? ' today' : ''}`}>{day.getDate()}</div>
-            <div className="month-events">
-              {visible.map((ev) => {
-                const style = getCategoryStyle(ev.category, colorVariants.get(ev.id) ?? 0);
+          <div key={w} className="month-week-row">
+            {Array.from({ length: 7 }, (_, d) => {
+              const day = addDays(weekStart, d);
+              const key = toDateStr(day);
+              const inMonth = day.getMonth() === month;
+              return (
+                <div key={d} className={`month-daycell${inMonth ? '' : ' outside'}`}>
+                  <div className={`month-daynum${key === todayStr ? ' today' : ''}`}>{day.getDate()}</div>
+                </div>
+              );
+            })}
+            <div className="month-week-bars">
+              {bars.map(({ event, startCol, endCol, lane }) => {
+                const style = getCategoryStyle(event.category, colorVariants.get(event.id) ?? 0);
                 return (
                   <button
-                    key={ev.id}
-                    className={`month-ribbon${selectedId === ev.id ? ' selected' : ''}`}
-                    style={{ background: style.bg, borderLeftColor: style.rail, color: style.text }}
-                    onClick={() => onSelect(ev.id)}
+                    key={event.id}
+                    className={`month-bar${selectedId === event.id ? ' selected' : ''}`}
+                    style={{
+                      left: `${(startCol / 7) * 100}%`,
+                      width: `${((endCol - startCol + 1) / 7) * 100}%`,
+                      top: MONTH_BAR_TOP + lane * (MONTH_BAR_HEIGHT + MONTH_BAR_GAP),
+                      background: style.bg,
+                      borderLeftColor: style.rail,
+                      color: style.text,
+                    }}
+                    onClick={() => onSelect(event.id)}
                   >
-                    {ev.title}
+                    {event.title}
                   </button>
                 );
               })}
-              {overflow > 0 && <div className="month-overflow">{moreLabel(overflow)}</div>}
+              {overflowByDay.map((count, d) =>
+                count > 0 ? (
+                  <div
+                    key={d}
+                    className="month-bar-overflow"
+                    style={{
+                      left: `${(d / 7) * 100}%`,
+                      width: `${(1 / 7) * 100}%`,
+                      top: MONTH_BAR_TOP + MONTH_MAX_LANES * (MONTH_BAR_HEIGHT + MONTH_BAR_GAP),
+                    }}
+                  >
+                    {moreLabel(count)}
+                  </div>
+                ) : null
+              )}
             </div>
           </div>
         );
       })}
-      {events.length === 0 && <div className="empty-state" style={{ gridColumn: '1 / -1' }}>{t('calendar.noEvents')}</div>}
+      {events.length === 0 && <div className="empty-state">{t('calendar.noEvents')}</div>}
     </div>
   );
 };
