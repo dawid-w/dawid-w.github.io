@@ -1422,6 +1422,7 @@
   height: 120px;
   border-radius: 50%;
   background: var(--orb-gradient);
+  transition: box-shadow 80ms linear;
 }
 .orb.orb-pulse {
   animation: orbPulse 1.6s ease-in-out infinite;

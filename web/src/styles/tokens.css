@@ -85,15 +85,15 @@ textarea {
 @keyframes orbPulse {
   0% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(193, 96, 42, 0.35);
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.35);
   }
   50% {
     transform: scale(1.06);
-    box-shadow: 0 0 0 40px rgba(193, 96, 42, 0);
+    box-shadow: 0 0 0 40px rgba(255, 255, 255, 0);
   }
   100% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(193, 96, 42, 0);
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
   }
 }
 

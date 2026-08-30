@@ -33,6 +33,60 @@ export const VoiceOverlay: React.FC<VoiceOverlayProps> = ({ onClose }) => {
   const activeRef = useRef(true);
   const recognitionRef = useRef<any>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const orbRef = useRef<HTMLDivElement>(null);
+  const micStreamRef = useRef<MediaStream | null>(null);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const meterRafRef = useRef<number | null>(null);
+
+  // Live mic-level glow around the orb while listening, so the user can see they're
+  // actually being heard — separate getUserMedia stream from SpeechRecognition's own,
+  // just for the Web Audio analyser (recognition doesn't expose raw levels).
+  const startVolumeMeter = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      if (!activeRef.current) {
+        stream.getTracks().forEach((tr) => tr.stop());
+        return;
+      }
+      micStreamRef.current = stream;
+      const AudioCtxCtor = window.AudioContext || (window as any).webkitAudioContext;
+      const ctx: AudioContext = new AudioCtxCtor();
+      audioCtxRef.current = ctx;
+      const source = ctx.createMediaStreamSource(stream);
+      const analyser = ctx.createAnalyser();
+      analyser.fftSize = 256;
+      analyser.smoothingTimeConstant = 0.65;
+      source.connect(analyser);
+      const data = new Uint8Array(analyser.frequencyBinCount);
+
+      const tick = () => {
+        if (!activeRef.current || audioCtxRef.current !== ctx) return;
+        analyser.getByteFrequencyData(data);
+        let sum = 0;
+        for (let i = 0; i < data.length; i++) sum += data[i];
+        const level = Math.min(1, (sum / data.length / 255) * 2.2);
+        if (orbRef.current) {
+          const spread = 10 + level * 46;
+          const alpha = 0.25 + level * 0.5;
+          orbRef.current.style.boxShadow = `0 0 ${spread}px ${spread * 0.5}px rgba(255,255,255,${alpha})`;
+        }
+        meterRafRef.current = requestAnimationFrame(tick);
+      };
+      tick();
+    } catch (err) {
+      console.warn('mic volume meter unavailable:', err);
+    }
+  };
+
+  const stopVolumeMeter = () => {
+    if (meterRafRef.current) cancelAnimationFrame(meterRafRef.current);
+    meterRafRef.current = null;
+    micStreamRef.current?.getTracks().forEach((tr) => tr.stop());
+    micStreamRef.current = null;
+    audioCtxRef.current?.close().catch(() => {});
+    audioCtxRef.current = null;
+    if (orbRef.current) orbRef.current.style.boxShadow = '';
+  };
 
   const stopEverything = () => {
     activeRef.current = false;
@@ -41,6 +95,7 @@ export const VoiceOverlay: React.FC<VoiceOverlayProps> = ({ onClose }) => {
     audioRef.current?.pause();
     audioRef.current = null;
     window.speechSynthesis?.cancel();
+    stopVolumeMeter();
   };
 
   const handleClose = () => {
@@ -85,6 +140,7 @@ export const VoiceOverlay: React.FC<VoiceOverlayProps> = ({ onClose }) => {
       return;
     }
     setState('THINKING');
+    stopVolumeMeter();
     addMessage({ id: `msg-${Date.now()}-u`, role: 'user', content: trimmed });
     const response = await sendMessage(trimmed, true);
     if (!activeRef.current) return;
@@ -134,6 +190,7 @@ export const VoiceOverlay: React.FC<VoiceOverlayProps> = ({ onClose }) => {
     };
     recognitionRef.current = recognition;
     recognition.start();
+    startVolumeMeter();
   };
 
   // onend needs the latest transcript without re-subscribing the whole recognition object.
@@ -160,7 +217,7 @@ export const VoiceOverlay: React.FC<VoiceOverlayProps> = ({ onClose }) => {
       </button>
 
       <div className="voice-center">
-        <div className={`orb${state === 'SPEAKING' ? ' orb-pulse' : ''}`} />
+        <div ref={orbRef} className={`orb${state === 'SPEAKING' ? ' orb-pulse' : ''}`} />
 
         {state === 'LISTENING' && (
           <div className="voice-bars">
