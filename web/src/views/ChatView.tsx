@@ -3,12 +3,8 @@ import { useT } from '../i18n';
 import { useAppStore } from '../services/store';
 import { sendChatMessage } from '../services/ai';
 import { Message, ToolCall, Task } from '../types';
-import { SearchIcon, MicIcon, VoiceIcon, SendIcon } from '../components/Icons';
+import { SearchIcon, MicIcon, SendIcon } from '../components/Icons';
 import { Checkbox } from '../components/Atoms';
-
-interface ChatViewProps {
-  onOpenVoice: () => void;
-}
 
 const TOOL_LABEL_KEY: Record<ToolCall['name'], string> = {
   create_task: 'chat.taskAdded',
@@ -58,7 +54,7 @@ const ActionCard: React.FC<{ tc: ToolCall; onOpen: (kind: 'task' | 'event' | 'no
   );
 };
 
-export const ChatView: React.FC<ChatViewProps> = ({ onOpenVoice }) => {
+export const ChatView: React.FC = () => {
   const t = useT();
   const messages = useAppStore((s) => s.messages);
   const tasks = useAppStore((s) => s.tasks);
@@ -232,9 +228,6 @@ export const ChatView: React.FC<ChatViewProps> = ({ onOpenVoice }) => {
                 <div className="composer-actions">
                   <button type="button" className={`circle-btn${dictating ? ' active' : ''}`} onClick={toggleDictation} aria-label={t('chat.listening')}>
                     <MicIcon size={17} color={dictating ? '#fff' : '#1C1C1E'} strokeWidth={1.8} />
-                  </button>
-                  <button type="button" className="circle-btn" onClick={onOpenVoice} aria-label={t('voice.label')}>
-                    <VoiceIcon size={17} color="#1C1C1E" />
                   </button>
                   <button type="submit" className="circle-btn circle-btn-ink" disabled={sending} aria-label={t('common.save')}>
                     <SendIcon size={14} />

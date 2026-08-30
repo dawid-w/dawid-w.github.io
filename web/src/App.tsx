@@ -92,7 +92,7 @@ export default function App() {
     <div className="frame">
       <Sidebar view={view} onNavigate={handleNavigate} onOpenVoice={() => setVoiceOpen(true)} />
       <div className="main">
-        {view === 'chat' && <ChatView onOpenVoice={() => setVoiceOpen(true)} />}
+        {view === 'chat' && <ChatView />}
         {view === 'tasks' && <TasksView />}
         {view === 'cal' && <CalendarView />}
         {view === 'notes' && <NotesView />}
